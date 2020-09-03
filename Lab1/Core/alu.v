@@ -93,6 +93,46 @@ begin
 		C = 4'b0000;
 		*/
 		end
+	CMPI:
+		begin
+		
+		end
+	CMPUI:
+		begin
+		
+		end
+	NOP:
+		begin
+		
+		end
+	AND:
+		begin
+		
+		end
+	OR:
+		begin
+		
+		end
+	XOR:
+		begin
+		
+		end
+	NOT:
+		begin
+		
+		end
+	LSHI:
+		begin
+		
+		end
+	RSH:
+		begin
+		
+		end
+	RSHI:
+		begin
+		
+		end
 	default: 
 		begin
 			C = 4'b0000;
