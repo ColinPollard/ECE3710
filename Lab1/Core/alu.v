@@ -178,23 +178,28 @@ begin
 		end
 	NOP:
 		begin
-		
+		Flags = 4'b0000;
+		C = 4'b0000;
 		end
 	AND:
 		begin
-		
+		Flags = 4'b0000;
+		C = A & B;
 		end
 	OR:
 		begin
-		
+		Flags = 4'b0000;
+		C = A | B;
 		end
 	XOR:
 		begin
-		
+		Flags = 4'b0000;
+		C = A ^ B;
 		end
 	NOT:
 		begin
-		
+		Flags = 4'b0000;
+		C = !A;
 		end
 	LSHI:
 		begin
@@ -207,7 +212,6 @@ begin
 	RSHI:
 		begin
 		
->>>>>>> fea5c01e0e593e978632f2a31b726cb752cc97bb
 		end
 	default: 
 		begin
