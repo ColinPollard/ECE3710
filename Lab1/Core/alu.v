@@ -178,27 +178,27 @@ begin
 		end
 	NOP:
 		begin
-		Flags = 4'b0000;
-		C = 4'b0000;
+		Flags = 5'b0000;
+		C = 16'b0000;
 		end
 	AND:
 		begin
-		Flags = 4'b0000;
+		Flags = 5'b0000;
 		C = A & B;
 		end
 	OR:
 		begin
-		Flags = 4'b0000;
+		Flags = 5'b0000;
 		C = A | B;
 		end
 	XOR:
 		begin
-		Flags = 4'b0000;
+		Flags = 5'b0000;
 		C = A ^ B;
 		end
 	NOT:
 		begin
-		Flags = 4'b0000;
+		Flags = 5'b0000;
 		C = !A;
 		end
 	LSHI:
