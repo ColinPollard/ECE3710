@@ -162,7 +162,6 @@ begin
 	
 	
 	// "Set the Z flag if the result is zero, set the N flag if Rsrc/Imm > Rdest when the operands are treated as two’s complement numbers"
-	CMPU,
 	CMPUI:
 		begin
 		// Set the N flag if A < B signed
