@@ -1,14 +1,14 @@
 /*
  * Authors:
-	Colin Pollard, Ian Lavin, Luke Majors, Mckay Mower
+ *	Colin Pollard, Ian Lavin, Luke Majors, Mckay Mower
  * 
  * Date Created:
-	9/3/2020
-	
+ *	9/3/2020
+ *	
  * 16-bit EECS 427 ALU Design
-	This project represents a 16-bit risc ALU that implements the baseline standard for
-	the EECS 427. It utilizes an internal 5-bit flags register, and assumes that immediate
-	sign extentions are handled outside of the ALU.
+ *	This project represents a 16-bit risc ALU that implements the baseline standard for
+ *	the EECS 427. It utilizes an internal 5-bit flags register, and assumes that immediate
+ *	sign extentions are handled outside of the ALU.
  */
 
 
@@ -23,7 +23,7 @@ output reg [4:0] Flags;
 // "The only ones which can change the program status register (PSR) are the arithmetic instructions ADD, ADDI, SUB,SUBI, CMP, CMPI."
 // Flags[0] = Carry bit
 // Flags[1] = Low Flag
-// Flags[2] = Flag Bit
+// Flags[2] = OF Bit
 // Flags[3] = Zero Bit
 // Flags[4] = Negative Bit
 
@@ -47,12 +47,12 @@ parameter CMPI   = 8'b1011xxxx;
 parameter CMPUI  = 8'b00001100;
 
 parameter NOP    = 8'b00000000;
-parameter AND    = 8'b00000001;
+parameter AND    = 8'b00000101;
 parameter OR     = 8'b00000010;
 parameter XOR    = 8'b00000011;
 parameter NOT    = 8'b00001111;
 
-parameter LSH    = 8'b00000111;
+parameter LSH    = 8'b10000100;
 parameter LSHI   = 8'b1000000x;
 parameter RSH    = 8'b01001111;
 parameter RSHI   = 8'b10000101;
@@ -70,11 +70,14 @@ begin
 	ADD,
 	ADDI:
 		begin
-		C = A + B;
-		if (C == 16'b0000000000000000) Flags[3] = 1'b1;
+		C = $signed(A) + $signed(B);
+		
+		if (C == 0) Flags[3] = 1'b1;
 		else Flags[3] = 1'b0;
+		
 		if( (~A[15] & ~B[15] & C[15]) | (A[15] & B[15] & ~C[15]) ) Flags[2] = 1'b1;
 		else Flags[2] = 1'b0;
+		
 		Flags[1:0] = 2'b00; Flags[4] = 1'b0;
 		end
 		
