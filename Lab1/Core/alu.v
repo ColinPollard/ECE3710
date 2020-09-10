@@ -27,7 +27,7 @@ output reg [4:0] Flags;
 // Flags[3] = Zero Bit
 // Flags[4] = Negative Bit
 
-parameter ADD    = 8'b00000001;
+parameter ADD    = 8'b00000101;
 parameter ADDI   = 8'b0101xxxx;
 
 parameter ADDU   = 8'b00000110;
@@ -52,7 +52,7 @@ parameter OR     = 8'b00000010;
 parameter XOR    = 8'b00000011;
 parameter NOT    = 8'b00001111;
 
-parameter LSH    = 8'b00000111;
+parameter LSH    = 8'b10000100;
 parameter LSHI   = 8'b1000000x;
 parameter RSH    = 8'b01001111;
 parameter RSHI   = 8'b10000101;
