@@ -1,0 +1,117 @@
+# ADD/ADDI Tests ----------------------------
+# 	   Zero flag testing:
+# 	   	PASSED:	0 + 0 = 0, Flags[4:0]: 01000
+# 			PASSED:	-1 + 1 = 0, Flags[4:0]: 01000
+#
+#	Overflow flag testing:
+# 		 PASSED:	-32768 + -1 = 32767, Flags[4:0]: 00100
+# 		 		PASSED:	 32767 + 1 = -32768, Flags[4:0]: 00100
+# ADDU/ADDUI Tests ----------------------------
+# 	     Carry flag testing:
+# 	     	   PASSED:	32768 + 32768 = 0, Flags[4:0]: 00001
+# 		   		PASSED:	65535 + 1 = 0, Flags[4:0]: 00001
+#
+#	No overflow flag testing:
+# 	   PASSED:  16384 + 16384 = 32768, Flags[4:0]: 00000
+#
+#	Clear carry testing:
+# 	      PASSED:	0 + 0 = 0, Flags[4:0]: 00000
+# ADDC/ADDCI Tests ----------------------------
+# 	     Zero flag testing without carry:
+# 	     	  PASSED:      0 + 0 = 0, Flags[4:0]: 01000
+# 		  	       PASSED: -1 + 1 = 0, Flags[4:0]: 01000
+#
+#	Overflow flag testing without carry:
+# 		 PASSED:      -32768 + -1 = 32767, Flags[4:0]: 00100
+# 		 	      PASSED:  32767 + 1 = -32768, Flags[4:0]: 00100
+# 			      Zero flag testing with carry:
+# 			      	   PASSED:	0 + 0 + 1 = 1, Flags[4:0]: 00000
+# 				   		PASSED:	-1 + 0 + 1 = 0, Flags[4:0]: 01000
+#
+#	Overflow flag testing with carry:
+# 		 PASSED:      -32768 + -2 + 1 = 32767, Flags[4:0]: 00100
+# 		 	      PASSED:  32767 + 0 + 1 = -32768, Flags[4:0]: 00100
+# ADDU/ADDUI Tests ----------------------------
+# 	     Carry flag testing without carry:
+# 	     	   PASSED:	32768 + 32768 = 0, Flags[4:0]: 00001
+# 		   		PASSED:	65535 + 1 = 1, Flags[4:0]: 00001
+#
+#	No overflow flag testing without carry:
+# 	   PASSED:  16384 + 16384 = 32769, Flags[4:0]: 00000
+#
+#	Clear carry testing without carry:
+# 	      PASSED:	    0 + 0 = 0, Flags[4:0]: 00000
+# 	      Carry flag testing with carry:
+# 	      	    PASSED:	 -32768 + -32768 + 1 = 1, Flags[4:0]: 00001
+# 		    		 PASSED:  -1 + 0 + 1 = 0, Flags[4:0]: 00001
+#
+#	No overflow flag testing with carry:
+# 	   PASSED:  16384 + 16383 + 1 = -32768, Flags[4:0]: 00000
+#
+#	Clear carry testing with carry:
+# 	      PASSED:	    0 + 0 + 1 = 1, Flags[4:0]: 00000
+# SUB/SUBI Tests ----------------------------
+# 	   Zero flag testing:
+# 	   	PASSED:	0 - 0 = 0, Flags[4:0]: 01000
+# 			PASSED:	1 - 1 = 0, Flags[4:0]: 01000
+#
+#	Overflow flag testing:
+# 		 PASSED:	-32768 - 1 = 32767, Flags[4:0]: 00100
+# 		 		PASSED:	 32767 - -1 = -32768, Flags[4:0]: 00100
+#
+#	General output testing:
+# 		PASSED:	5 - 3 = 2, Flags[4:0]: 00000
+# 			PASSED:	5 - -3 = 8, Flags[4:0]: 00000
+# CMP/CMPI Tests ----------------------------
+# 	   Zero flag / equality testing:
+# 	   	PASSED:		Compare 0 and 0, Flags[4:0]: 01000
+# 				PASSED:	Compare 20310 and 20310, Flags[4:0]: 01000
+#
+#	Low flag testing:
+# 	    PASSED:	Compare -32768 and 32767, Flags[4:0]: 00010
+# 	    		PASSED:	Compare 5 and 32, Flags[4:0]: 00010
+# CMPU/CMPUI Tests ----------------------------
+# 	     Zero flag / equality testing:
+# 	     	  PASSED:	  Compare 0 and 0, Flags[4:0]: 01000
+# 		  		  PASSED: Compare 20310 and 20310, Flags[4:0]: 01000
+#
+#	Negative flag testing:
+# 		 PASSED:	Compare 16384 and -1, Flags[4:0]: 10000
+# 		 		PASSED:	Compare 5 and 32, Flags[4:0]: 10000
+# Logical Tests ----------------------------
+# 	  AND:
+#		PASSED:	1111111111111111 & 0000000000000001 = 0000000000000001, Flags[4:0]: 00000
+# 			PASSED:		 1111111111111111 & 0000000000000000 = 0000000000000000, Flags[4:0]: 00000
+# 			OR:
+#				PASSED:	1111000011110000 | 0000111100001111 = 1111111111111111, Flags[4:0]: 00000
+# 					PASSED:		 1111111111111111 | 0000000000000000 = 1111111111111111, Flags[4:0]: 00000
+# 					XOR:
+#						PASSED:	1111111111111111 ^ 1111111111111111 = 0000000000000000, Flags[4:0]: 00000
+# 							PASSED:		 1111111111111111 ^ 0000000000000000 = 1111111111111111, Flags[4:0]: 00000
+# 							NOT:
+#								PASSED:	!0000111100001111 = 1111000011110000, Flags[4:0]: 00000
+# 									PASSED:		  !1111111111111111 = 0000000000000000, Flags[4:0]: 00000
+# Shift Operations ----------------------------
+# 	LSH:
+#		PASSED:	0 << 1 = 0, Flags[4:0]: 00000
+# 			PASSED:	 -32768 << 1 = 0, Flags[4:0]: 00000
+# 				 PASSED:   -32767 << 1 = 2, Flags[4:0]: 00000
+# 				 LSHI:
+#					PASSED:	0 << 2 = 0, Flags[4:0]: 00000
+# 						PASSED:	 -32767 << 3 = 8, Flags[4:0]: 00000
+# 						RSHI:
+#							PASSED:	0 >> 2 = 0, Flags[4:0]: 00000
+# 								PASSED:	 0000000000001111 >> 3 = 0000000000000001, Flags[4:0]: 00000
+# 								RSH:
+#									PASSED:	0 >> 1 = 0, Flags[4:0]: 00000
+# 										PASSED:	 2 >> 1 = 1, Flags[4:0]: 00000
+# 											 PASSED:  1 >> 1 = 0, Flags[4:0]: 00000
+# 											 	  PASSED:  128 >> 1 = 64, Flags[4:0]: 00000
+# 												  ALSH:
+#													PASSED:	0 <<< 2 = 0, Flags[4:0]: 00000
+# 														PASSED:	-32767 <<< 3 = 8, Flags[4:0]: 00000
+# 														ARSH:
+#															PASSED:	64 >>> 6 = 1, Flags[4:0]: 00000
+# 																PASSED:	 1000000000001111 >>> 3 = 1111000000000001, Flags[4:0]: 00000
+#
+# RESULTS: 61/61 passed

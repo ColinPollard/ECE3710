@@ -209,21 +209,21 @@ begin
 	RSHI:
 		begin
 		Flags = 5'b00000;
-		C = A >> $signed(B[4:0]);
+		C = A >> B[4:0];
 		end
 		
 	// Arithmetic left shift
 	ALSH:
 		begin
 		Flags = 5'b00000;
-		C = A <<< $signed(B[4:0]);
+		C = $signed(A) <<< $signed(B[4:0]);
 		end
 	
 	// Arithmetic right shift
 	ARSH:
 		begin
 		Flags = 5'b00000;
-		C = A >>> $signed(B[4:0]);
+		C = $signed(A) >>> $signed(B[4:0]);
 		end
 		
 	// Default case ----------------------------------------------------------------------------------------------------------------------------------
