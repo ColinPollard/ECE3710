@@ -62,7 +62,7 @@ parameter ARSH   = 8'b10001xxx;
 
 always @(A, B, Opcode)
 begin
-	case (Opcode)
+	casex (Opcode)
 	
 	// Adding operations -----------------------------------------------------------------------------------------------------------------------------
 	
@@ -70,7 +70,7 @@ begin
 	ADD,
 	ADDI:
 		begin
-		C = $signed(A) + $signed(B);
+		C = A + B;
 		
 		if (C == 0) Flags[3] = 1'b1;
 		else Flags[3] = 1'b0;
@@ -155,7 +155,7 @@ begin
 		else Flags[3] = 1'b0;
 		
 		// There is no write back, so we will just set C to 0
-		C = 4'b0000;
+		C = 0;
 		
 		// All other flags zero.
 		Flags[0] = 1'b0;
