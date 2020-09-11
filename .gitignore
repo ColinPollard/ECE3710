@@ -31,6 +31,7 @@
 *_inst.vhd
 *.bak
 *.cmp
+*.cdf
 *.done
 *.eqn
 *.hex
@@ -48,6 +49,7 @@
 *.qsf
 *.rpt
 *.smsg
+*.sld
 *.sof
 *.sopc_builder
 *.summary
