@@ -106,7 +106,7 @@ begin
 		else Flags[3] = 1'b0;
 		
 		// If signed subtraction results in overflow set flag bit.
-		if( (~A[15] & ~B[15] & C[15]) | (A[15] & B[15] & ~C[15]) ) Flags[2] = 1'b1;
+		if( (~A[15] & B[15] & C[15]) | (A[15] & ~B[15] & ~C[15]) ) Flags[2] = 1'b1;
 		else Flags[2] = 1'b0;
 		
 		// All other flags zero.
@@ -148,7 +148,7 @@ begin
 		else Flags[3] = 1'b0;
 		
 		// There is no write back, so we will just set C to 0
-		C = 4'b0000;
+		C = 0;
 		
 		// All other flags zero.
 		Flags[2:0] = 3'b000;
@@ -159,7 +159,7 @@ begin
 	NOP:
 		begin
 		Flags = 5'b0000;
-		C = 16'b0000;
+		C = 16'h0000;
 		end
 	AND:
 		begin
@@ -179,7 +179,7 @@ begin
 	NOT:
 		begin
 		Flags = 5'b0000;
-		C = !A;
+		C = ~A;
 		end
 	
 	// Shifting Operations ---------------------------------------------------------------------------------------------------------------------------	
