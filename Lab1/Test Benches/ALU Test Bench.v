@@ -680,20 +680,6 @@ module alutest;
 		//Results
 		$display("\nRESULTS: %0d/%0d passed", passed, total);
 		
-		
-		//Random simulation
-		for( i = 0; i< 10; i = i+ 1)
-		begin
-			#10
-			A = $random % 16;
-			B = $random % 16;
-			//#5
-			//$display("A: %0d, B: %0d, C: %0d, Flags[4:0]: %b, time:%0d", A, B, C, Flags[4:0], $time );
-		end
-		//$finish(2);
-		
-		// Add stimulus here
-
 	end
       
 endmodule
