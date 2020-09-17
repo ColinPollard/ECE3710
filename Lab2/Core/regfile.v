@@ -1,4 +1,8 @@
-// REGFILE
+// Author: Colin Pollard, Ian Lavin, Luke Majors, Mckay Mower
+// Date: 9/17/2020
+// This file represents an array of registers that are accessible using select lines.
+
+
 
 // Single register instance.
 module Register(in, wEnable, clk, r);
@@ -19,6 +23,8 @@ module Register(in, wEnable, clk, r);
 	end
 endmodule
 
+
+
 // Register file, allows reading and writing from 16 registers.
 module regfile(readA, readB, selectA, selectB, writeValue, writeSelect, writeEnable, clock);
 
@@ -37,6 +43,7 @@ input[3:0] writeSelect, selectA, selectB;
 // Clock signal
 input clock;
 
+// Internal 16 bit signal to enable single registers.
 reg [15:0] regEnable;
 
 // Create a decoder to enable registers.
@@ -59,5 +66,9 @@ Register Inst12(write, regEnable[12], clock, r12);
 Register Inst13(write, regEnable[13], clock, r13);
 Register Inst14(write, regEnable[14], clock, r14);
 Register Inst15(write, regEnable[15], clock, r15); 
+
+// Muxes for selecting output a, b
+mux16to1 muxA(r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, selectA, readA);
+mux16to1 muxB(r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, selectB, readB);
 
 endmodule
