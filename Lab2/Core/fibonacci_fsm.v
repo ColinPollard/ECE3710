@@ -7,7 +7,7 @@
  * using the ALU and regfile.
  */
  
-module fib_test_fsm(clk, rst, write_enable, write_select, regA, regB, op, reg_imm, reg_reset);
+module fibonacci_fsm(clk, rst, write_enable, write_select, regA, regB, op, reg_imm, reg_reset);
 	input clk, rst;
 	output reg[3:0] write_select, regA, regB;
 	output reg[7:0] op;
@@ -18,8 +18,8 @@ module fib_test_fsm(clk, rst, write_enable, write_select, regA, regB, op, reg_im
 	
 	//Parameters for the fsm states
 	parameter[4:0] S0 = 5'h00, S1 = 5'h01, S2 = 5'h02, S3 = 5'h03, S4 = 5'h04, S5 = 5'h05, S6 = 5'h06, S7 = 5'h07,
-						S8 = 5'h08, S9 = 5'h09, S10 = 5'h0a, S11 = 5'h0b, S12 = 5'h0c, S13 = 5'h0d, S14 = 5'h0e, S14 = 5'h0f,
-						S15 = 5'h10, S16 = 5'h11, S17 = 5'h12, S18 = 5'h13, S19 = 5'h14, S20 = 5'h15, S21 = 5'h16;
+						S8 = 5'h08, S9 = 5'h09, S10 = 5'h0a, S11 = 5'h0b, S12 = 5'h0c, S13 = 5'h0d, S14 = 5'h0e, S15 = 5'h0f,
+						S16 = 5'h10;//, S17 = 5'h11, S18 = 5'h12, S19 = 5'h13, S20 = 5'h14, S21 = 5'h15, S22 = 5'h16;
 	
 	//Include opcode parameters 
 	`include "../../opcodes.v"
@@ -27,10 +27,10 @@ module fib_test_fsm(clk, rst, write_enable, write_select, regA, regB, op, reg_im
 	//Update state
 	always @(posedge clk)
 	begin
-		if(reset) y <= S0;
-		else if(y == S21)
-			y <= S21;
-		else
+		if(rst) y <= S0;
+		else if(y == S16)
+			y <= y;
+		else begin
 			y <= y + 1;
 		end
 	end
@@ -48,7 +48,7 @@ module fib_test_fsm(clk, rst, write_enable, write_select, regA, regB, op, reg_im
 				regB = 4'bx;
 				reg_imm = 1'bx;
 			end
-			S2: begin //Set reg0 to 1
+			S1: begin //Set reg0 to 1
 				op = ADDI;
 				reg_reset = 0;
 				write_select = 4'h0;

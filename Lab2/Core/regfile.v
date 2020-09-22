@@ -30,7 +30,7 @@ endmodule
 module regfile(readA, readB, selectA, selectB, writeValue, writeSelect, writeEnable, clock, reset);
 
 // Output ports A and B
-output reg [15:0] readA, readB;
+output [15:0] readA, readB;
 
 // Value to write to register
 input[15:0] writeValue;
@@ -45,7 +45,7 @@ input[3:0] writeSelect, selectA, selectB;
 input clock;
 
 // Internal 16 bit signal to enable single registers.
-reg [15:0] regEnable;
+wire [15:0] regEnable;
 
 // Create a decoder to enable registers.
 decoder decoder0(writeSelect, writeEnable, regEnable);
