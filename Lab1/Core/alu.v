@@ -14,9 +14,10 @@
 
 `timescale 1ns / 1ps
 
-module alu( A, B, C, Opcode, Flags);
+module alu( A, B, cin, C, Opcode, Flags);
 input [15:0] A, B;
 input [7:0] Opcode;
+input cin;
 output reg [15:0] C;
 output reg [4:0] Flags;
 
@@ -29,7 +30,7 @@ output reg [4:0] Flags;
 
 `include "../../opcodes.v"
 
-always @(A, B, Opcode)
+always @(A, B, Opcode, cin)
 begin
 	casex (Opcode)
 	
@@ -57,7 +58,7 @@ begin
 	ADDCI:
 		begin
 		// Add A + B + Carry bit
-		C = A + B + Flags[0];
+		C = A + B + cin;
 		
 		// If zero result set Z bit
 		if (C == 16'b0000000000000000) Flags[3] = 1'b1;
@@ -86,7 +87,7 @@ begin
 	ADDCUI:	
 		begin
 		// Set the carry bit if result is 17 bits
-		{Flags[0], C} = A + B + Flags[0];
+		{Flags[0], C} = A + B + cin;
 		
 		// Set all other flags to 0
 		Flags[4:1] = 4'b0000;
@@ -220,6 +221,7 @@ begin
 		end
 	
 	// Arithmetic right shift
+	// TODO: Test negative shift amount
 	ARSH:
 		begin
 		Flags = 5'b00000;
