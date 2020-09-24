@@ -2,8 +2,9 @@
 // Inputs are all of the control signals
 
 //readA, readB, selectA, selectB, writeValue, writeSelect, writeEnable, clock, reset
-module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, reg_reset);
-input clk, reg_imm, write_enable, reg_reset;
+module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset);
+
+input clk, reg_imm, write_enable, reg_reset, external_write_enable;
 input [15:0] regA, regB, write_select, immediate_value, external_write_value;
 input [7:0] op;
 
@@ -44,7 +45,7 @@ wire [4:0] ALUFlagOut, flagModuleOut;
 
 // ALU Flags Module
 Flags flagsModule(
-	.flagsIn(flagOut), 
+	.flagsIn(ALUFlagOut), 
 	.flagsOut(flagModuleOut), 
 	.clk(clk)
 );
@@ -56,7 +57,7 @@ alu aluInstance (
 	.cin(flagModuleOut[0]),
 	.C(ALUC), 
 	.Opcode(op), 
-	.Flags(flagOut)
+	.Flags(ALUFlagOut)
 );
 
 endmodule
