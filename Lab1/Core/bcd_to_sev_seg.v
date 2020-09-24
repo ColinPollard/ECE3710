@@ -16,7 +16,6 @@ always @*
    4'b0111 : begin seven_seg = ~7'b1110000; end
    4'b1000 : begin seven_seg = ~7'b1111111; end
    4'b1001 : begin seven_seg = ~7'b1110011; end
-	
 	4'b1010 : begin seven_seg = ~7'b1110111; end //A
 	4'b1011 : begin seven_seg = ~7'b0011111; end //B
 	4'b1100 : begin seven_seg = ~7'b1001110; end //C
