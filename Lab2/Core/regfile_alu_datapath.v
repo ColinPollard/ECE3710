@@ -5,10 +5,11 @@
 module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset);
 
 input clk, reg_imm, write_enable, reg_reset, external_write_enable;
-input [15:0] regA, regB, write_select, immediate_value, external_write_value;
+input [15:0] write_select, immediate_value, external_write_value;
+input [3:0] regA, regB;
 input [7:0] op;
 
-wire [15:0] busA, busB, ALUB, wbValue, ALUC;
+wire [15:0] busA, busB, ALUB, ALUC, wbValue;
 wire BSelect, external_write_enable;
 
 
