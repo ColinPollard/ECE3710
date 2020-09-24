@@ -40,4 +40,10 @@ regfile_alu_datapath datapath(
 	.wbValue(wbValue)
 );
 
+// Seven Segment Converter
+bcd_to_sev_seg segConverter(
+	.bcd(wbValue[3:0]),
+	.seven_seg(seg7)
+);
+
 endmodule
