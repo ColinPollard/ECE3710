@@ -12,8 +12,8 @@ wire[15:0] imm_val, wbValue;
 
 // Create an FSM
 fibonacci_fsm FSM(
-	.clk(clk), 
-	.rst(fsmReset), 
+	.clk(~clk), 
+	.rst(~fsmReset), 
 	.write_enable(write_enable), 
 	.write_select(write_select), 
 	.regA(regA), 
@@ -26,7 +26,7 @@ fibonacci_fsm FSM(
 
 // Create a datapath instance
 regfile_alu_datapath datapath(
-	.clk(clk), 
+	.clk(~clk), 
 	.write_enable(write_enable), 
 	.write_select(write_select), 
 	.external_write_value(16'b0), 

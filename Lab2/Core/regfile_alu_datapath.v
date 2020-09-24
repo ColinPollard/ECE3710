@@ -4,8 +4,8 @@
 module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue);
 
 input clk, reg_imm, write_enable, reg_reset, external_write_enable;
-input [15:0] write_select, immediate_value, external_write_value;
-input [3:0] regA, regB;
+input [15:0] immediate_value, external_write_value;
+input [3:0] regA, regB, write_select;
 input [7:0] op;
 
 // For testing, normally would be a wire.
