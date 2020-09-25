@@ -12,7 +12,6 @@ input [7:0] op;
 output[15:0] wbValue;
 
 wire [15:0] busA, busB, ALUB, ALUC;
-wire BSelect, external_write_enable;
 
 
 // BUS B MUX

@@ -13,14 +13,17 @@ module Register(in, wEnable, clk, r, reset);
  always @( posedge clk )
 	begin
 		if(reset) r <= 16'h0000;
-		else if (wEnable)
+		else 
+		begin
+			if (wEnable)
 			begin
 				r <= in;
 			end
-		else
+			else
 			begin
 				r <= r;
 			end
+		end
 	end
 endmodule
 
@@ -45,7 +48,7 @@ input[3:0] writeSelect, selectA, selectB;
 input clock;
 
 // Internal 16 bit signal to enable single registers.
-wire [15:0] regEnable;
+wire [15:0] regEnable, r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15;
 
 // Create a decoder to enable registers.
 decoder decoder0(writeSelect, writeEnable, regEnable);
