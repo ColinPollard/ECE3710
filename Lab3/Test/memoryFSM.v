@@ -2,7 +2,7 @@
 // Date: 10/1/2020
 // This module demonstrates and tests reading and writing to the memory module.
 
-module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB, clkA, clkB, dataOutA, dataOutB);
+module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB, dataOutA, dataOutB);
 	
 	// Clock to fsm, reset state to 0.
 	input clk, rst;
@@ -11,7 +11,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 	input [15:0] dataOutA, dataOutB;
 	
 	// Write enables, clocks for the bram, and initializememory call.
-	output reg weA, weB, clkA, clkB;
+	output reg weA, weB;
 	
 	// Data input to bram, output from fsm (write to memory).
 	output reg [15:0] dataInA, dataInB;
@@ -42,73 +42,100 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 	end
 
 	//Update output
+	// Expected output is: 1, 2, 3, 5, 1024.
 	always @(y)
 	begin
 		case(y)
 			S0: begin // Read from address 0 (expect 1) on A
 					
-					weA = 1'b0;
-					weB = 1'b0;
-					clkB = 1'b0;
-					dataInA = 16'd0;
-					dataInB = 16'd0;
-					addressB = 8'd0;
-					
-					// Set the address to read from
-					addressA = 8'd0;
-					
-					// Raise clock
-					clkA = 1'b1;
-					
-					// Wait for response
-					#5
-					
-					// Set seg7 output to first three bits of result
-					seg7 = dataOutA;
-					
-					// Lower Clock
-					clkA = 1'b0;
+				weA = 1'b0;
+				weB = 1'b0;
+				dataInA = 16'd0;
+				dataInB = 16'd0;
+				addressB = 8'd0;
+				
+				// Set the address to read from
+				addressA = 8'd0;
+				
+				// Set seg7 output to first three bits of result
+				seg7 = dataOutA;
 			end
 			S1: begin // Read from address 1 (expect 2) on B
 					
-					weA = 1'b0;
-					weB = 1'b0;
-					clkA = 1'b0;
-					dataInA = 16'd0;
-					dataInB = 16'd0;
-					addressA = 8'd0;
-					
-					// Set the address to read from
-					addressB = 8'd1;
-					
-					// Raise clock
-					clkB = 1'b1;
-					
-					// Wait for response
-					#5
-					
-					// Set seg7 output to first three bits of result
-					seg7 = dataOutB;
-					
-					// Lower Clock
-					clkB = 1'b0;
-
+				weA = 1'b0;
+				weB = 1'b0;
+				dataInA = 16'd0;
+				dataInB = 16'd0;
+				addressA = 8'bx;
+				
+				// Set the address to read from
+				addressB = 8'd1;
+				
+				// Set seg7 output to first three bits of result
+				seg7 = dataOutB;
 			end
 			S2: begin // Write to address 0 on A, read from address 3 on B
+			
+				weB = 1'b0;
+				dataInB = 16'd0;
 			
 				// Enable writing on A
 				weA = 1'b1;
 				
+				// Write value is 5
+				dataInA = 16'd5;
 				
-
+				// Write address is 0
+				addressA = 8'd0;
+				
+				// Read Address is 3
+				addressB = 8'd3;
+				
+				// Get output
+				seg7 = dataOutB;
+				
 			end
 			S3: begin // Read from address 0 on A, write to address 513 on B
+			
+				weA = 1'b0;
+				dataInA = 16'b0;
+				
+				// Enable Writing on B
+				weB = 1'b1;
+				
+				// Write value is 1024
+				dataInB = 16'd1024;
+				
+				// Write address of B is 513
+				addressB = 8'd513;
+				
+				// Read address on A is 0
+				addressA = 0;
+				
+				// Get Output
+				seg7 = dataOutA;
 
 			end
-			S4: begin // 
+			S4: begin // Read from address 513 on A, reset value at address 0 to 1 on B.
+			
+				weA = 1'b0;
+				weB = 1'b1;
+				addressA = 8'd513;
+				addressB = 8'd0;
+				dataInA = 16'bx;
+				dataInB = 16'd1;
+				seg7 = dataOutA;
 
 			end
-			S5: begin //reg4 = reg2 + reg3
+			S5: begin // Reset value at address 513 to 0 on A. Read from 0 on B.
+			
+				weA = 1'b1;
+				weB = 1'b0;
+				addressA = 8'd513;
+				addressB = 8'd0;
+				dataInA = 16'd0;
+				dataInB = 16'dx;
+				seg7 = dataOutB;
 
 			end
 			S6: begin //reg5 = reg3 + reg4
