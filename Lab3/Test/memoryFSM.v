@@ -2,7 +2,7 @@
 // Date: 10/1/2020
 // This module demonstrates and tests reading and writing to the memory module.
 
-module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB, dataOutA, dataOutB);
+module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, weA, weB, dataOutA, dataOutB);
 	
 	// Clock to fsm, reset state to 0.
 	input clk, rst;
@@ -19,8 +19,8 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 	// Addresses to access/write to.
 	output reg [7:0] addressA, addressB;
 	
-	// Seven segment output for hardware demo.
-	output reg [3:0] seg7;
+	// 0 Selects output A, 1 Selects output B.
+	output reg displaySelect;
 
 	//Store state
 	reg[3:0] y;
@@ -42,7 +42,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 	end
 
 	//Update output
-	// Expected output is: 1, 2, 3, 5, 1024.
+	// Expected output is: 1, 2, 3, 5, 6.
 	always @(y)
 	begin
 		case(y)
@@ -58,7 +58,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 				addressA = 8'd0;
 				
 				// Set seg7 output to first three bits of result
-				seg7 = dataOutA;
+				displaySelect = 1'b0;
 			end
 			S1: begin // Read from address 1 (expect 2) on B
 					
@@ -71,8 +71,8 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 				// Set the address to read from
 				addressB = 8'd1;
 				
-				// Set seg7 output to first three bits of result
-				seg7 = dataOutB;
+				// Set seg7 output to B
+				displaySelect = 1'b1;
 			end
 			S2: begin // Write to address 0 on A, read from address 3 on B
 			
@@ -92,7 +92,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 				addressB = 8'd3;
 				
 				// Get output
-				seg7 = dataOutB;
+				displaySelect = 1'b1;
 				
 			end
 			S3: begin // Read from address 0 on A, write to address 513 on B
@@ -104,7 +104,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 				weB = 1'b1;
 				
 				// Write value is 1024
-				dataInB = 16'd1024;
+				dataInB = 16'd6;
 				
 				// Write address of B is 513
 				addressB = 8'd513;
@@ -113,7 +113,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 				addressA = 0;
 				
 				// Get Output
-				seg7 = dataOutA;
+				displaySelect = 1'b0;
 
 			end
 			S4: begin // Read from address 513 on A, reset value at address 0 to 1 on B.
@@ -124,7 +124,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 				addressB = 8'd0;
 				dataInA = 16'bx;
 				dataInB = 16'd1;
-				seg7 = dataOutA;
+				displaySelect = 1'b0;
 
 			end
 			S5: begin // Reset value at address 513 to 0 on A. Read from 0 on B.
@@ -135,44 +135,18 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 				addressB = 8'd0;
 				dataInA = 16'd0;
 				dataInB = 16'dx;
-				seg7 = dataOutB;
+				displaySelect = 1'b1;
 
 			end
-			S6: begin //reg5 = reg3 + reg4
-
-			end
-			S7: begin //reg6 = reg4 + reg5
-
-			end
-			S8: begin //reg7 = reg5 + reg6
-
-			end
-			S9: begin //reg8 = reg6 + reg7
-
-			end
-			S10: begin //reg9 = reg7 + reg8
-
-			end
-			S11: begin //reg10 = reg8 + reg9
-
-			end
-			S12: begin //reg11 = reg9 + reg10
-
-			end
-			S13: begin //reg12 = reg10 + reg11
-
-			end
-			S14: begin //reg13 = reg11 + reg12
-
-			end
-			S15: begin //reg14 = reg12 + reg13
-
-			end
-			S16: begin //reg15 = reg13 + reg14
-
-			end
+			
 			default: begin
-
+				weA = 1'b0;
+				weB = 1'b0;
+				addressA = 8'd0;
+				addressB = 8'd0;
+				dataInA = 16'd0;
+				dataInB = 16'd0;
+				displaySelect = 1'b0;
 			end
 		endcase
 	end	
