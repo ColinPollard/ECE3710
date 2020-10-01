@@ -2,7 +2,7 @@
 // Date: 10/1/2020
 // This module demonstrates and tests reading and writing to the memory module.
 
-module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB, clkA, clkB, dataOutA, dataOutB, initializeMemory);
+module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB, clkA, clkB, dataOutA, dataOutB);
 	
 	// Clock to fsm, reset state to 0.
 	input clk, rst;
@@ -11,7 +11,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 	input [15:0] dataOutA, dataOutB;
 	
 	// Write enables, clocks for the bram, and initializememory call.
-	output reg weA, weB, clkA, clkB, initializeMemory;
+	output reg weA, weB, clkA, clkB;
 	
 	// Data input to bram, output from fsm (write to memory).
 	output reg [15:0] dataInA, dataInB;
@@ -20,7 +20,7 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 	output reg [7:0] addressA, addressB;
 	
 	// Seven segment output for hardware demo.
-	output reg [6:0] seg7;
+	output reg [3:0] seg7;
 
 	//Store state
 	reg[3:0] y;
@@ -45,20 +45,67 @@ module memoryFSM(clk, rst, seg7, dataInA, dataInB, addressA, addressB, weA, weB,
 	always @(y)
 	begin
 		case(y)
-			S0: begin // Initialize all memory according to the mif file.
+			S0: begin // Read from address 0 (expect 1) on A
+					
+					weA = 1'b0;
+					weB = 1'b0;
+					clkB = 1'b0;
+					dataInA = 16'd0;
+					dataInB = 16'd0;
+					addressB = 8'd0;
+					
+					// Set the address to read from
+					addressA = 8'd0;
+					
+					// Raise clock
+					clkA = 1'b1;
+					
+					// Wait for response
+					#5
+					
+					// Set seg7 output to first three bits of result
+					seg7 = dataOutA;
+					
+					// Lower Clock
+					clkA = 1'b0;
+			end
+			S1: begin // Read from address 1 (expect 2) on B
+					
+					weA = 1'b0;
+					weB = 1'b0;
+					clkA = 1'b0;
+					dataInA = 16'd0;
+					dataInB = 16'd0;
+					addressA = 8'd0;
+					
+					// Set the address to read from
+					addressB = 8'd1;
+					
+					// Raise clock
+					clkB = 1'b1;
+					
+					// Wait for response
+					#5
+					
+					// Set seg7 output to first three bits of result
+					seg7 = dataOutB;
+					
+					// Lower Clock
+					clkB = 1'b0;
+
+			end
+			S2: begin // Write to address 0 on A, read from address 3 on B
+			
+				// Enable writing on A
+				weA = 1'b1;
+				
 				
 
 			end
-			S1: begin //Set reg0 to 1
+			S3: begin // Read from address 0 on A, write to address 513 on B
 
 			end
-			S2: begin //Set reg1 to 2
-
-			end
-			S3: begin //reg2 = reg0 + reg1
-
-			end
-			S4: begin //reg3 = reg1 + reg2
+			S4: begin // 
 
 			end
 			S5: begin //reg4 = reg2 + reg3
