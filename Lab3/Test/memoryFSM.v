@@ -40,7 +40,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 	end
 
 	//Update output
-	// Expected output is: 1, 2, 3, 5, 6.
+	// Expected output is: 1, 2, 3, 4, 5, 0.
 	always @(y)
 	begin
 		case(y)
@@ -130,7 +130,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				weA = 1'b1;
 				weB = 1'b0;
 				addressA = 8'd513;
-				addressB = 8'd0;
+				addressB = 8'd5;
 				dataInA = 16'd0;
 				dataInB = 16'dx;
 				displaySelect = 1'b1;

@@ -9,7 +9,7 @@ wire slowClock;
 // Create a clock divider for slow signal
 clk_divider divider(
 .clk_in(clk), 
-.rst(~reset), 
+.rst(1'b0), 
 .clk_out(slowClock)
 );
 
