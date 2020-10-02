@@ -83,13 +83,13 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				weA = 1'b1;
 				
 				// Write value is 5
-				dataInA = 16'd5;
+				dataInA = 16'd4;
 				
 				// Write address is 0
 				addressA = 8'd0;
 				
 				// Read Address is 3
-				addressB = 8'd3;
+				addressB = 8'd2;
 				
 				// Get output
 				displaySelect = 1'b1;
@@ -104,7 +104,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				weB = 1'b1;
 				
 				// Write value is 1024
-				dataInB = 16'd6;
+				dataInB = 16'd5;
 				
 				// Write address of B is 513
 				addressB = 8'd513;
