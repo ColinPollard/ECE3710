@@ -42,7 +42,7 @@ memoryFSM fsm(
 );
 
 // MUX for selecting display output
-mux2to1_4bit(
+mux2to1_4bit DisplayMUX(
 .A(dataOutA), 
 .B(dataOutB), 
 .ctrl(displaySelect), 
@@ -50,7 +50,7 @@ mux2to1_4bit(
 );
 
 // Create a memory module
-DualBRAM(
+DualBRAM memoryModule(
 .data_a(dataInA),
 .data_b(dataInB),
 .addr_a(addressA),

@@ -12,8 +12,13 @@ module DualBRAM
 );
 
 	// Declare the RAM variable, initialize to file.
-	(* ram_init_file = "Zero.mif" *) reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
-
+	reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
+	
+	initial
+	begin
+		$readmemb("init.txt", ram);
+	end
+	
 	always @ (posedge clk_a)
 	begin
 		// Port A 
