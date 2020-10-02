@@ -26,15 +26,13 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 	reg[3:0] y;
 	
 	//Parameters for the fsm states
-	parameter[4:0] S0 = 5'h00, S1 = 5'h01, S2 = 5'h02, S3 = 5'h03, S4 = 5'h04, S5 = 5'h05, S6 = 5'h06, S7 = 5'h07,
-						S8 = 5'h08, S9 = 5'h09, S10 = 5'h0a, S11 = 5'h0b, S12 = 5'h0c, S13 = 5'h0d, S14 = 5'h0e, S15 = 5'h0f,
-						S16 = 5'h10;
+	parameter[4:0] S0 = 5'h00, S1 = 5'h01, S2 = 5'h02, S3 = 5'h03, S4 = 5'h04, S5 = 5'h05;
 						
 	//Update state
 	always @(posedge clk)
 	begin
 		if(rst) y <= S0;
-		else if(y == S16)
+		else if(y == S5)
 			y <= y;
 		else begin
 			y <= y + 1;
@@ -82,7 +80,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				// Enable writing on A
 				weA = 1'b1;
 				
-				// Write value is 5
+				// Write value is 4
 				dataInA = 16'd4;
 				
 				// Write address is 0
@@ -103,7 +101,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				// Enable Writing on B
 				weB = 1'b1;
 				
-				// Write value is 1024
+				// Write value is 5
 				dataInB = 16'd5;
 				
 				// Write address of B is 513
