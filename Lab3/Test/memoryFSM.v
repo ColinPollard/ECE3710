@@ -23,7 +23,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 	reg[3:0] y;
 	
 	//Parameters for the fsm states
-	parameter[4:0] S0 = 5'h00, S1 = 5'h01, S2 = 5'h02, S3 = 5'h03, S4 = 5'h04, S5 = 5'h05;
+	parameter[3:0] S0 = 4'h00, S1 = 4'h01, S2 = 4'h02, S3 = 4'h03, S4 = 4'h04, S5 = 4'h05;
 						
 	//Update state
 	always @(posedge clk)
@@ -32,7 +32,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 		else if(y == S5)
 			y <= y;
 		else begin
-			y <= y + 1;
+			y <= y + 1'b1;
 		end
 	end
 
