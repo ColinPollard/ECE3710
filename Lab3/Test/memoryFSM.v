@@ -93,7 +93,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				displaySelect = 1'b1;
 				
 			end
-			S3: begin // Read from address 0 on A, write to address 600 on B
+			S3: begin // Read from address 0 on A, write to address 513 on B
 			
 				weA = 1'b0;
 				dataInA = 16'b0;
@@ -104,8 +104,8 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				// Write value is 5
 				dataInB = 16'd5;
 				
-				// Write address of B is 600
-				addressB = 10'd600;
+				// Write address of B is 513
+				addressB = 10'd513;
 				
 				// Read address on A is 0
 				addressA = 10'd0;
@@ -114,22 +114,22 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				displaySelect = 1'b0;
 
 			end
-			S4: begin // Read from address 600 on A, reset value at address 0 to 1 on B.
+			S4: begin // Read from address 513 on A, reset value at address 0 to 1 on B.
 			
 				weA = 1'b0;
 				weB = 1'b1;
-				addressA = 10'd600;
+				addressA = 10'd513;
 				addressB = 10'd0;
 				dataInA = 16'bx;
 				dataInB = 16'd1;
 				displaySelect = 1'b0;
 
 			end
-			S5: begin // Reset value at address 600 to 0 on A. Read from 5 on B.
+			S5: begin // Reset value at address 513 to 0 on A. Read from 5 on B.
 			
 				weA = 1'b1;
 				weB = 1'b0;
-				addressA = 10'd600;
+				addressA = 10'd513;
 				addressB = 10'd5;
 				dataInA = 16'd0;
 				dataInB = 16'dx;
