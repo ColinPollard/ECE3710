@@ -2,13 +2,10 @@
 // Date: 10/1/2020
 // This module demonstrates and tests reading and writing to the memory module.
 
-module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, weA, weB, dataOutA, dataOutB);
+module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, weA, weB);
 	
 	// Clock to fsm, reset state to 0.
 	input clk, rst;
-	
-	// These are the data outputs from the bram, and inputs to the fsm (fetch result).
-	input [15:0] dataOutA, dataOutB;
 	
 	// Write enables, clocks for the bram, and initializememory call.
 	output reg weA, weB;
