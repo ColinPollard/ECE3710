@@ -23,7 +23,7 @@ bcd_to_sev_seg decoder(
 );
 
 wire [15:0] dataInA, dataInB, dataOutA, dataOutB;
-wire [7:0] addressA, addressB;
+wire [9:0] addressA, addressB;
 wire weA, weB, displaySelect;
 
 // Create an FSM

@@ -17,7 +17,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 	output reg [15:0] dataInA, dataInB;
 	
 	// Addresses to access/write to.
-	output reg [7:0] addressA, addressB;
+	output reg [9:0] addressA, addressB;
 	
 	// 0 Selects output A, 1 Selects output B.
 	output reg displaySelect;
@@ -50,10 +50,10 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				weB = 1'b0;
 				dataInA = 16'd0;
 				dataInB = 16'd0;
-				addressB = 8'd0;
+				addressB = 10'd0;
 				
 				// Set the address to read from
-				addressA = 8'd0;
+				addressA = 10'd0;
 				
 				// Set seg7 output to first three bits of result
 				displaySelect = 1'b0;
@@ -67,7 +67,7 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				addressA = 8'b0;
 				
 				// Set the address to read from
-				addressB = 8'd1;
+				addressB = 10'd1;
 				
 				// Set seg7 output to B
 				displaySelect = 1'b1;
@@ -84,10 +84,10 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				dataInA = 16'd4;
 				
 				// Write address is 0
-				addressA = 8'd0;
+				addressA = 10'd0;
 				
 				// Read Address is 3
-				addressB = 8'd2;
+				addressB = 10'd2;
 				
 				// Get output
 				displaySelect = 1'b1;
@@ -105,10 +105,10 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 				dataInB = 16'd5;
 				
 				// Write address of B is 600
-				addressB = 8'd600;
+				addressB = 10'd600;
 				
 				// Read address on A is 0
-				addressA = 0;
+				addressA = 10'd0;
 				
 				// Get Output
 				displaySelect = 1'b0;
@@ -118,8 +118,8 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 			
 				weA = 1'b0;
 				weB = 1'b1;
-				addressA = 8'd600;
-				addressB = 8'd0;
+				addressA = 10'd600;
+				addressB = 10'd0;
 				dataInA = 16'bx;
 				dataInB = 16'd1;
 				displaySelect = 1'b0;
@@ -129,8 +129,8 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 			
 				weA = 1'b1;
 				weB = 1'b0;
-				addressA = 8'd600;
-				addressB = 8'd5;
+				addressA = 10'd600;
+				addressB = 10'd5;
 				dataInA = 16'd0;
 				dataInB = 16'dx;
 				displaySelect = 1'b1;
@@ -140,8 +140,8 @@ module memoryFSM(clk, rst, displaySelect, dataInA, dataInB, addressA, addressB, 
 			default: begin // Do nothing
 				weA = 1'b0;
 				weB = 1'b0;
-				addressA = 8'd0;
-				addressB = 8'd0;
+				addressA = 10'd0;
+				addressB = 10'd0;
 				dataInA = 16'd0;
 				dataInB = 16'd0;
 				displaySelect = 1'b0;

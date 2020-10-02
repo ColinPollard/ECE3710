@@ -1,6 +1,6 @@
 // Author: Colin Pollard, Ian Lavin, Luke Majors, McKay Mower
 // Date: 9/29/2020
-// This module represents a true dual port dual clock RAM with a data width of 16 and an address width of 10.
+// This module represents a true dual port dual clock RAM with a data width of 16 and an address width of 8.
 
 module DualBRAM
 #(parameter DATA_WIDTH=16, parameter ADDR_WIDTH=10)
