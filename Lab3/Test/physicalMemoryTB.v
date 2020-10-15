@@ -36,9 +36,7 @@ memoryFSM fsm(
 .addressA(addressA), 
 .addressB(addressB), 
 .weA(weA), 
-.weB(weB), 
-.dataOutA(dataOutA), 
-.dataOutB(dataOutB)
+.weB(weB)
 );
 
 // MUX for selecting display output
