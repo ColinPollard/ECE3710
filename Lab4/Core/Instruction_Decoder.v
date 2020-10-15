@@ -30,8 +30,49 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate);
 			immediate = 8'd0;
 		end
 		
+		// Shift Instructions
+		else if(instruction[15:12] == 4'b1000)
+		begin
+			
+			//R-Type (LSH, ASHU, RSH)
+			if(instruction[7:4] == 4'b0100 || instruction[7:4] == 4'b0110 || instruction[7:4] == 4'b0101)
+			begin
+				op = {instruction[15:12], instruction[7:4]};
+				rDest = instruction[11:8];
+				rSrc = instruction[3:0];
+				immediate = 8'd0;
+			end
+			
+			//LSHI, ASHUI
+			else if(instruction[7:3] == 3'b000 || instruction[7:3] == 3'b001)
+			begin
+				op = {instruction[15:12], instruction[7:3], 1'b0};
+				rDest = instruction[11:8];
+				rSrc = 4'd0;
+				immediate = {4'b0, instruction[3:0]};
+			end
+			
+			// Base case
+			else
+			begin
+				op = 8'd0;
+				rDest = 4'd0;
+				rSrc = 4'd0;
+				immediate = 8'd0;
+			end	
+		end
+		
+		// Custom RSH
+		else if({instruction[15:12], instruction[7:4]} == 8'b01001111)
+		begin
+			op = {instruction[15:12], instruction[7:4]};
+			rDest = instruction[11:8];
+			rSrc = instruction[3:0];
+			immediate = 8'd0;
+		end
+		
 		// I-Type
-		else if(instruction[15:12] == 4'b0101)
+		else
 		begin
 			// Op code is 4 bits, set last 4 to don't care
 			op = {instruction[15:12], 4'b0};
@@ -39,15 +80,6 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate);
 			// Don't care
 			rSrc = 4'd0;
 			immediate = instruction[7:0];
-		end
-		
-		// Base Case (unknown instruction) set 0.
-		else
-		begin
-			op = 8'd0;
-			rDest = 4'd0;
-			rSrc = 4'd0;
-			immediate = 8'd0;
 		end
 		
 	end
