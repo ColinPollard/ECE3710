@@ -1,4 +1,4 @@
-// Author: Colin Pollard, Ian Lavin
+// Author: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 // This file describes a basic program counter.
 
