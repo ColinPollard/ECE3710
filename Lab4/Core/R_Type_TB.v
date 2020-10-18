@@ -1,10 +1,12 @@
-// Authors: Colin Pollard, Ian Lavin, McKay Mower
+// Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 // Test bench for R type functionality.
 
 module R_Type_TB(clk, rst, seg7);
 input clk;
+input rst;
 
+output seg7;
 // 1Hz clock
 wire slowClock;
 
@@ -56,7 +58,7 @@ DualBRAM memoryModule(
 
 // Seven Segment Converter
 bcd_to_sev_seg segConverter(
-	.bcd(wbValue[3:0]),
+	.bcd(wbValue),
 	.seven_seg(seg7)
 );
 
