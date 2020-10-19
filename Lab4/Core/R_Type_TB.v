@@ -9,6 +9,7 @@ input rst;
 output seg7;
 // 1Hz clock
 wire slowClock,enablewire;
+wire [3:0] regA, regB;
 
 // Create a clock divider for slow signal
 clk_divider divider(
@@ -20,8 +21,9 @@ clk_divider divider(
 // Current address of the program counter
 wire [9:0] currentAddress;
 // Create a basic program counter
-Basic_PC pc(.clk(slowClock), 
-.address(currentAddress)
+Basic_PC pc(
+.clk(slowClock), 
+.address(currentAddress),
 .enable(enablewire)
 );
 
@@ -29,7 +31,7 @@ Basic_PC pc(.clk(slowClock),
 regfile_alu_datapath datapath(
 	.clk(slowClock), 
 	.write_enable(write_enable), 
-	.write_select(write_select), 
+	.write_select(regA), 
 	.external_write_value(16'b0), 
 	.external_write_enable(1'b0), 
 	.regA(regA), 
@@ -74,10 +76,10 @@ R_Type_FSM FSM(
 );
 
 Instruction_Decoder decoder(
-.instruction(),
-.op(),
-.rDest(),
-.rSrc(),
-.immediate()
+.instruction(currentInstruction),
+.op(op),
+.rDest(regA),
+.rSrc(regB),
+.immediate(imm_val)
 );
 endmodule
