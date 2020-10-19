@@ -8,7 +8,7 @@ input rst;
 
 output seg7;
 // 1Hz clock
-wire slowClock;
+wire slowClock,enablewire;
 
 // Create a clock divider for slow signal
 clk_divider divider(
@@ -21,7 +21,9 @@ clk_divider divider(
 wire [9:0] currentAddress;
 // Create a basic program counter
 Basic_PC pc(.clk(slowClock), 
-.address(currentAddress));
+.address(currentAddress)
+.enable(enablewire)
+);
 
 // Create a datapath instance
 regfile_alu_datapath datapath(
@@ -62,4 +64,20 @@ bcd_to_sev_seg segConverter(
 	.seven_seg(seg7)
 );
 
+
+R_Type_FSM FSM(
+.clk(slowClock),
+.rst(rst),
+.PC_enable(enablewire),
+.R_enable(write_enable),
+.R_or_I(reg_imm)
+);
+
+Instruction_Decoder decoder(
+.instruction(),
+.op(),
+.rDest(),
+.rSrc(),
+.immediate()
+);
 endmodule

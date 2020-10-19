@@ -29,25 +29,44 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I);
 	end
 	
 	//Update output
-	// Expected output is: 1, 2, 3, 4, 5, 0.
 	always @(y)
 	begin
 		case(y)
 			S0: begin 
 			PC_enable = 1'b0;
-			R_en = 1'b0;
+			R_enable = 1'b0;
 			R_or_I = 1'bx;
 			end
+			
 			S1: begin
 			PC_enable = 1'b0;
-			R_en = 1'b0;
+			R_enable = 1'b0;
 			R_or_I = 1'bx;
 			end
+			
 			S2: begin
 			PC_enable = 1'b1;
-			R_en = 1'b0; //
+			R_enable = 1'b0; //
 			R_or_I = 1'bx; //
 			end
+//			
+//			S3: begin 
+//			PC_enable = 1'b0;
+//			R_enable = 1'b0;
+//			R_or_I = 1'bx;
+//			end
+//			
+//			S4: begin 
+//			PC_enable = 1'b0;
+//			R_enable = 1'b0;
+//			R_or_I = 1'bx;
+//			end
+//			
+//			S5: begin 
+//			PC_enable = 1'b0;
+//			R_enable = 1'b0;
+//			R_or_I = 1'bx;
+//			end
 			
 			default: begin // Do nothing
 			end
