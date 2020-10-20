@@ -19,7 +19,7 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 	reg[3:0] y;
 	
 	//Parameters for the fsm states
-	parameter[3:0] S0 = 4'h00, S1 = 4'h01, S2 = 4'h02, S3 = 4'h03;
+	parameter[3:0] S0 = 4'h00, S1 = 4'h01, S2 = 4'h02, S3 = 4'h03, S4 = 4'h04, S5 = 4'h05;
 						
 	//Update state
 	always @(posedge clk)
@@ -50,6 +50,7 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			LScntl = 1;
 			end
 			
+			//This state is only selected if the instruction is R type
 			S2: begin
 			PC_enable = 1'b1;
 			R_enable = 1'b0; //
@@ -57,24 +58,26 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			LScntl = 1;
 			end
 		
+			//This state is only selected if the instruction is store type
 			S3: begin 
 			PC_enable = 1'b1;
 			R_enable = 1'b1;
 			R_or_I = 1'bx;
 			LScntl = 0;
 			end
-//			
-//			S4: begin 
-//			PC_enable = 1'b0;
-//			R_enable = 1'b0;
-//			R_or_I = 1'bx;
-//			end
-//			
-//			S5: begin 
-//			PC_enable = 1'b0;
-//			R_enable = 1'b0;
-//			R_or_I = 1'bx;
-//			end
+		
+			//These two states are only selcted if the instruction is load type
+			S4: begin 
+			PC_enable = 1'b0;
+			R_enable = 1'b0;
+			R_or_I = 1'bx;
+			end
+		
+			S5: begin 
+			PC_enable = 1'b0;
+			R_enable = 1'b0;
+			R_or_I = 1'bx;
+			end
 			
 			default: begin // Do nothing
 			end
