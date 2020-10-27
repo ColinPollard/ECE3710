@@ -25,11 +25,26 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 	always @(posedge clk)
 	begin
 		if(rst) y <= S0;
-		else if(y == S2)
-			y <= S0;
-		else begin
+		
+		else if(y == S4) y <= S5;
+		
+		else if(y == S2 || y == S3 || y == S5) y <= S0;
+		
+		else if(y < S2)
 			y <= y + 1'b1;
+			
+		else begin
+			//Check to see if the current operation is a load instruction
+			if (instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b0000) y <=S4;
+			
+			//Check to see if the current operation is a store instruction
+			else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b0100) y <= S3;
+			
+			//If neither it must be an R type instruction
+			else y <= S2;
+				
 		end
+			
 	end
 	
 	//Update output
@@ -41,6 +56,8 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
 			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 			
 			S1: begin
@@ -48,6 +65,8 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
 			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 			
 			//This state is only selected if the instruction is R type
@@ -56,6 +75,8 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			R_enable = 1'b0; //
 			R_or_I = 1'bx; //
 			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 		
 			//This state is only selected if the instruction is store type
@@ -63,7 +84,9 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			PC_enable = 1'b1;
 			R_enable = 1'b1;
 			R_or_I = 1'bx;
-			LScntl = 0;
+			LScntl = 1;
+			WE = 1;
+			ALU_Mux_cntl = 0;
 			end
 		
 			//These two states are only selcted if the instruction is load type
@@ -71,12 +94,18 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			PC_enable = 1'b0;
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
+			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 		
 			S5: begin 
 			PC_enable = 1'b0;
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
+			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 			
 			default: begin // Do nothing
