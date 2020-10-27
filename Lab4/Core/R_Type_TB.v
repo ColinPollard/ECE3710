@@ -28,6 +28,10 @@ Basic_PC pc(
 .enable(enablewire)
 );
 
+wire write_enable, r_or_i;
+wire [7:0] op;
+wire [15:0] imm_val;
+wire [15:0] wbValue;
 // Create a datapath instance
 regfile_alu_datapath datapath(
 	.clk(slowClock), 
@@ -38,9 +42,9 @@ regfile_alu_datapath datapath(
 	.regA(regA), 
 	.regB(regB), 
 	.op(op), 
-	.reg_imm(reg_imm), 
+	.reg_imm(r_or_i), 
 	.immediate_value(imm_val), 
-	.reg_reset(reset), 
+	.reg_reset(1'b0), 
 	.wbValue(wbValue),
 	.busA(Din),
 	.ALUB(wbaddress)
@@ -70,12 +74,11 @@ bcd_to_sev_seg segConverter(
 );
 
 
-R_Type_FSM FSM(
+CPU_FSM FSM(
 .clk(slowClock),
 .rst(rst),
 .PC_enable(enablewire),
 .R_enable(write_enable),
-.R_or_I(reg_imm),
 .LScntl(LScntl),
 .ALU_Mux_cntl(alu_mux_cntl),
 .instruction(currentInstruction),
@@ -87,7 +90,8 @@ Instruction_Decoder decoder(
 .op(op),
 .rDest(regA),
 .rSrc(regB),
-.immediate(imm_val)
+.immediate(imm_val),
+.r_or_i(r_or_i)
 );
 
 mux2to1 LSmux(

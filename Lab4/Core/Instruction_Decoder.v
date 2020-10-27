@@ -2,21 +2,26 @@
 // Date: 10/15/2020
 // This module decodes instructions from memory.
 
-module Instruction_Decoder(instruction, op, rDest, rSrc, immediate);
+module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 
 	// Incoming instruction, can be R or I type.
 	input [15:0] instruction; //data out
 
 	// Op code is 4 bits with possible extra four bits if R type. Immediate for I type.
-	output reg [7:0] op, immediate;
+	output reg [7:0] op;
+	output reg [15:0] immediate;
 
 	// Register selects.
 	output reg [3:0] rDest, rSrc;
+	
+	// MUX control wire for selecting a value from register or immediate to ALU input B.
+	output reg r_or_i;
 
 	// Update on new instruction.
 	always @(instruction)
 	begin
-		// Determine if it is an R-type or I-type
+		// Determine if it is an R-type or I-type. By default, assume R type and switch mux control if I type.
+		r_or_i = 1'b1;
 		
 		// if bits 15-12 are 0000, R-type
 		if (instruction[15:12] == 4'b0000)
@@ -81,12 +86,14 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate);
 		// I-Type instruction
 		else
 		begin
+			r_or_i = 1'b0;
 			// Op code is 4 bits, set last 4 to don't care
 			op = {instruction[15:12], 4'bx};
 			rDest = instruction[11:8];	
 			// Don't care
 			rSrc = 4'bx;
-			immediate = instruction[7:0];
+			// Sign extend to 16 bits from 8 bit instruction.
+			immediate = $signed(instruction[7:0]);
 		end
 		
 	end
