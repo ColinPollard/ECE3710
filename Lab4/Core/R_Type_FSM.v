@@ -28,7 +28,7 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 		
 		else if(y == S4) y <= S5;
 		
-		else if(y == S2 || S3 || S5)
+		else if(y == S2 || y == S3 || y == S5) y <= S0;
 		
 		else if(y < S2)
 			y <= y + 1'b1;
@@ -56,6 +56,8 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
 			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 			
 			S1: begin
@@ -63,6 +65,8 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
 			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 			
 			//This state is only selected if the instruction is R type
@@ -71,6 +75,8 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			R_enable = 1'b0; //
 			R_or_I = 1'bx; //
 			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 		
 			//This state is only selected if the instruction is store type
@@ -78,7 +84,9 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			PC_enable = 1'b1;
 			R_enable = 1'b1;
 			R_or_I = 1'bx;
-			LScntl = 0;
+			LScntl = 1;
+			WE = 1;
+			ALU_Mux_cntl = 0;
 			end
 		
 			//These two states are only selcted if the instruction is load type
@@ -86,12 +94,18 @@ module R_Type_FSM(clk, rst, PC_enable, R_enable, R_or_I,LScntl,ALU_Mux_cntl,inst
 			PC_enable = 1'b0;
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
+			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 		
 			S5: begin 
 			PC_enable = 1'b0;
 			R_enable = 1'b0;
 			R_or_I = 1'bx;
+			LScntl = 1;
+			WE = 0;
+			ALU_Mux_cntl = 0;
 			end
 			
 			default: begin // Do nothing
