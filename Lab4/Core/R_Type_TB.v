@@ -29,9 +29,11 @@ Basic_PC pc(
 );
 
 wire write_enable, r_or_i;
+wire [4:0] flagModuleOut;
 wire [7:0] op;
 wire [15:0] imm_val;
 wire [15:0] wbValue;
+
 // Create a datapath instance
 regfile_alu_datapath datapath(
 	.clk(slowClock), 
@@ -47,7 +49,8 @@ regfile_alu_datapath datapath(
 	.reg_reset(1'b0), 
 	.wbValue(wbValue),
 	.busA(Din),
-	.ALUB(wbaddress)
+	.ALUB(wbaddress),
+	.flagModuleOut(flagModuleOut)
 );
 
 
@@ -82,7 +85,8 @@ CPU_FSM FSM(
 .LScntl(LScntl),
 .ALU_Mux_cntl(alu_mux_cntl),
 .instruction(currentInstruction),
-.WE(we)
+.WE(we),
+.flagModuleOut(flagModuleOut)
 );
 
 Instruction_Decoder decoder(

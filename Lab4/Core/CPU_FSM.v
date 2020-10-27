@@ -2,9 +2,10 @@
 // Date: 10/15/2020
 // This file creates an FSM to control basic R-type instructions.
 
-module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction, WE);
+module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction, WE, flagModuleOut);
 	input clk, rst;
 	input [15:0] instruction;
+	input [4:0] flagModuleOut;
 	
 	output reg PC_enable;
 	output reg R_enable;

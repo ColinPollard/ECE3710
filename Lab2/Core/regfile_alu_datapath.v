@@ -1,13 +1,14 @@
 // Wrapper for ALU, regfiles, mux, etc.
 // Inputs are all of the control signals
 
-module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB);
+module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB, flagModuleOut);
 
 input clk, reg_imm, write_enable, reg_reset, external_write_enable;
 input [15:0] immediate_value, external_write_value;
 input [3:0] regA, regB, write_select;
 input [7:0] op;
 
+output [4:0] flagModuleOut;
 // For testing, normally would be a wire.
 output[15:0] wbValue, busA, ALUB;
 
@@ -43,7 +44,7 @@ regfile regfileInstance(
 	.reset(reg_reset)
 );
 
-wire [4:0] ALUFlagOut, flagModuleOut;
+wire [4:0] ALUFlagOut;
 
 // ALU Flags Module
 Flags flagsModule(
