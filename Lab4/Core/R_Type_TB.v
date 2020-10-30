@@ -21,18 +21,25 @@ clk_divider divider(
 
 // Current address of the program counter
 wire [9:0] currentAddress,addressinput,wbaddress;
-// Create a basic program counter
-Basic_PC pc(
-.clk(slowClock), 
-.address(currentAddress),
-.enable(enablewire)
-);
+
+// Set the address to point to 0 initially.
+initial currentAddress = 10'd0;
 
 wire write_enable, r_or_i,IREnable;
 wire [4:0] flagModuleOut;
 wire [7:0] op;
 wire [15:0] imm_val;
 wire [15:0] wbValue;
+
+// Create a basic program counter
+PC pc(
+	.clk(slowClock), 
+	.address(currentAddress),
+	.prevAddr(currentAddress),
+	.disp(displacement),
+	.branch_select(imm_val),
+	.enable(enablewire)
+);
 
 // Create a datapath instance
 regfile_alu_datapath datapath(
