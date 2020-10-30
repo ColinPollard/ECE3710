@@ -49,7 +49,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			//Check to see if the current operation is a branch instruction
 			else if(instruction[15:12] == 4'b1100 && 
 				((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || 
-				(instruction[11:8] == 4'1100 && !flagModuleOut[3] && flagModuleOut[1])))
+				(instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1])))
 				y <= S6;
 				
 			//If neither it must be an R type instruction
