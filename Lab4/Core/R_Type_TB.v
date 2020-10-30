@@ -28,7 +28,7 @@ Basic_PC pc(
 .enable(enablewire)
 );
 
-wire write_enable, r_or_i;
+wire write_enable, r_or_i,IREnable;
 wire [4:0] flagModuleOut;
 wire [7:0] op;
 wire [15:0] imm_val;
@@ -55,7 +55,7 @@ regfile_alu_datapath datapath(
 
 
 // Store the current instruction on the A bus, values on the B bus
-wire [15:0] currentInstruction;
+wire [15:0] currentInstruction,outgoinginstruction;
 // Create a memory module
 DualBRAM memoryModule(
 .data_a(Din),
@@ -86,11 +86,12 @@ CPU_FSM FSM(
 .ALU_Mux_cntl(alu_mux_cntl),
 .instruction(currentInstruction),
 .WE(we),
-.flagModuleOut(flagModuleOut)
+.flagModuleOut(flagModuleOut),
+.irenable(IREnable)
 );
 
 Instruction_Decoder decoder(
-.instruction(currentInstruction),
+.instruction(outgoinginstruction),
 .op(op),
 .rDest(regA),
 .rSrc(regB),
@@ -103,6 +104,13 @@ mux2to1 LSmux(
 .B(currentAddress),
 .ctrl(LScntl),
 .out(addressinput)
+);
+
+IR_Register irRegister(
+.incomingdata(currentInstruction),
+.outgoingdata(outgoinginstruction),
+.IREnable(IREnable),
+.clk(slowClock)
 );
 
 endmodule

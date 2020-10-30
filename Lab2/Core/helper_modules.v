@@ -41,3 +41,15 @@ module mux16to1(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14,
 	mux4to1 M4 (R12, R13, R14, R15, ctrl[1:0], d);
 	mux4to1 Mout (a, b, c, d, ctrl[3:2], out);
 endmodule
+
+module IR_Register(incomingdata, outgoingdata, IREnable, clk);
+output reg[15:0] outgoingdata;
+input[15:0] incomingdata;
+input clk,IREnable;
+
+always @( posedge clk )
+	begin
+		outgoingdata <= incomingdata;
+	end
+	
+endmodule
