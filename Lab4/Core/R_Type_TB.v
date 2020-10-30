@@ -23,7 +23,6 @@ clk_divider divider(
 wire [9:0] currentAddress,addressinput,wbaddress;
 
 // Set the address to point to 0 initially.
-initial currentAddress = 10'd0;
 
 wire write_enable, r_or_i,IREnable;
 wire [4:0] flagModuleOut;
@@ -35,7 +34,7 @@ wire [15:0] wbValue;
 PC pc(
 	.clk(slowClock), 
 	.address(currentAddress),
-	.prevAddr(currentAddress),
+	.prev_addr(currentAddress),
 	.disp(displacement),
 	.branch_select(imm_val),
 	.enable(enablewire)
