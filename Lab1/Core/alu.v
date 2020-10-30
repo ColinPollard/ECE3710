@@ -196,7 +196,7 @@ begin
 	LSHI:
 		begin
 		Flags = 5'b00000;
-		C = A << $signed(B[4:0]);
+		C = A << B[4:0];
 		end
 		
 	// Right shift by 1
@@ -217,7 +217,7 @@ begin
 	ALSH:
 		begin
 		Flags = 5'b00000;
-		C = $signed(A) <<< $signed(B[4:0]);
+		C = $signed(A) <<< B[4:0];
 		end
 	
 	// Arithmetic right shift
@@ -225,7 +225,7 @@ begin
 	ARSH:
 		begin
 		Flags = 5'b00000;
-		C = $signed(A) >>> $signed(B[4:0]);
+		C = $signed(A) >>> B[4:0];
 		end
 		
 	// Default case ----------------------------------------------------------------------------------------------------------------------------------

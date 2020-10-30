@@ -8,7 +8,7 @@ input rst;
 
 output seg7;
 // 1Hz clock
-wire slowClock,enablewire,LScntl,alu_mux_cntl,we;
+wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select;
 wire [3:0] regA, regB;
 wire [15:0] Din;
 
@@ -35,8 +35,8 @@ PC pc(
 	.clk(slowClock), 
 	.address(currentAddress),
 	.prev_addr(currentAddress),
-	.disp(displacement),
-	.branch_select(imm_val),
+	.disp(imm_val),
+	.branch_select(branch_select),
 	.enable(enablewire)
 );
 
@@ -93,7 +93,8 @@ CPU_FSM FSM(
 .instruction(currentInstruction),
 .WE(we),
 .flagModuleOut(flagModuleOut),
-.irenable(IREnable)
+.irenable(IREnable),
+.PC_mux(branch_select)
 );
 
 Instruction_Decoder decoder(

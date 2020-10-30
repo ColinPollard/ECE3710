@@ -47,11 +47,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 				y <= S3;
 			
 			//Check to see if the current operation is a branch instruction
-			else if(instruction[15:12] == 4'b1100 && 
-				((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || 
-				(instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1])))
-				
-			else if(instruction[15:12] == 4'b1100 && ((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || (instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1])))
+			else if(instruction[15:12] == 4'b1100 && ((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || (instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1]) || instruction[11:8] == 4'b1110))
 				y <= S6;
 				
 			//If neither it must be an R type instruction
@@ -78,6 +74,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			// Writeback mux, 1 passes through alu result to wb, 0 changes to memory value.
 			ALU_Mux_cntl = 1'b1;
 			irenable = 1'b0;
+			PC_mux = 1'b0;
 			end
 			
 			S1: begin
@@ -146,6 +143,13 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			end
 			
 			default: begin // Do nothing
+				PC_enable = 1'b0;
+				R_enable = 1'b0;
+				LScntl = 1'b0;
+				WE = 1'b0;
+				ALU_Mux_cntl = 1'b0;
+				irenable = 1'b0;
+				PC_mux = 1'b0;			
 			end
 		endcase
 	end
