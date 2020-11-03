@@ -83,7 +83,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			immediate = 8'bx;
 		end
 		
-		//Branch
+		//Branch/Jump instruction
 		else if(instruction[15:12] == 4'b1100)
 		begin
 			op = {instruction[15:12], instruction[11:8]};
@@ -91,17 +91,6 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rSrc = 4'bx;
 			immediate = $signed(instruction[7:0]);
 		end
-		
-		//Jump
-		else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b1100)
-		begin
-			op = {instruction[15:12], instruction[11:8]};
-			rDest = 4'bx;
-			rSrc = instruction[3:0];
-			immediate = 8'bx;
-		end
-		
-		
 		
 		// I-Type instruction
 		else

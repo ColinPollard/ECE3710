@@ -16,7 +16,7 @@ module DualBRAM
 	
 	initial
 	begin
-		$readmemb("init.txt", ram);
+		$readmemb("test1.txt", ram);
 	end
 	
 	always @ (posedge clk_a)

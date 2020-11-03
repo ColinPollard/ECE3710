@@ -6,11 +6,12 @@ module CPU_datapath(clk, rst, seg7);
 input clk;
 input rst;
 
-output seg7;
+output [0:6] seg7;
 // 1Hz clock
 wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select;
 wire [3:0] regA, regB;
 wire [15:0] Din;
+wire [15:0] currentInstruction,outgoinginstruction;
 
 // Create a clock divider for slow signal
 clk_divider divider(
@@ -61,7 +62,7 @@ regfile_alu_datapath datapath(
 
 
 // Store the current instruction on the A bus, values on the B bus
-wire [15:0] currentInstruction,outgoinginstruction;
+
 // Create a memory module
 DualBRAM memoryModule(
 .data_a(Din),
