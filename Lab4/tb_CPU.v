@@ -6,13 +6,13 @@ module tb_CPU();
 	reg rst, clk;
 
 	// outputs - wires
-	wire [6:0] seg7;
-	CPU_datapath uut3 (clk, rst, seg7);
+	wire [15:0] out;
+	CPU_datapath uut3 (clk, rst, out);
 	
 	always #5 clk = ~clk;
 	// give variations
 	initial begin
-		//$monitor("Output: %d", seg7_1);
+		$monitor("Output: %d", out);
 		//Initializ inputs
 		clk = 1;
 		rst = 1; #2;
