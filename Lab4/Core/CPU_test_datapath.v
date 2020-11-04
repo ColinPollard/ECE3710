@@ -2,23 +2,16 @@
 //This module is the same as the cpu_datapath but it
 //does not use the seven seg display
 
-module CPU_test_datapath(clk, rst, wbValue);
-input clk;
+module CPU_test_datapath(slowClock, rst, wbValue);
+input slowClock;
 input rst;
 
 output [15:0] wbValue;
 // 1Hz clock
-wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select;
+wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst;
 wire [3:0] regA, regB;
 wire [15:0] Din;
 wire [15:0] currentInstruction,outgoinginstruction;
-
-// Create a clock divider for slow signal
-clk_divider divider(
-.clk_in(clk), 
-.rst(1'b0), 
-.clk_out(slowClock)
-);
 
 // Current address of the program counter
 wire [9:0] currentAddress,addressinput,wbaddress;
@@ -53,7 +46,7 @@ regfile_alu_datapath datapath(
 	.op(op), 
 	.reg_imm(r_or_i), 
 	.immediate_value(imm_val), 
-	.reg_reset(1'b0), 
+	.reg_reset(reg_rst), 
 	.wbValue(wbValue),
 	.busA(Din),
 	.ALUB(wbaddress),
@@ -71,8 +64,8 @@ DualBRAM memoryModule(
 .addr_b(10'd0),
 .we_a(we),
 .we_b(1'b0),
-.clk_a(clk),
-.clk_b(clk),
+.clk_a(slowClock),
+.clk_b(slowClock),
 .q_a(currentInstruction),
 .q_b()
 );
@@ -88,7 +81,8 @@ CPU_FSM FSM(
 .WE(we),
 .flagModuleOut(flagModuleOut),
 .irenable(IREnable),
-.PC_mux(branch_select)
+.PC_mux(branch_select),
+.reg_rst(reg_rst)
 );
 
 Instruction_Decoder decoder(

@@ -6,7 +6,7 @@ module PC(clk, address, enable, disp, branch_select, prev_addr);
 input clk,enable, branch_select;
 input [7:0] disp;
 input [9:0] prev_addr;
-output reg [9:0] address;
+output reg [9:0] address = 0;
 
 always @(posedge clk)
 begin
