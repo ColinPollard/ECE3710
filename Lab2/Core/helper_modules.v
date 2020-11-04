@@ -49,7 +49,10 @@ input clk,IREnable;
 
 always @( posedge clk )
 	begin
-		outgoingdata <= incomingdata;
+		if(IREnable)
+			outgoingdata <= incomingdata;
+		else
+			outgoingdata <= outgoingdata;
 	end
 	
 endmodule

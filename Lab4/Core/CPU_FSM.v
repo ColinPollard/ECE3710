@@ -2,7 +2,7 @@
 // Date: 10/15/2020
 // This file creates an FSM to control basic R-type instructions.
 
-module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction, WE, flagModuleOut,irenable, PC_mux, reg_rst);
+module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, instruction, WE, flagModuleOut,irenable, PC_mux, reg_rst);
 	input clk, rst;
 	input [15:0] instruction;
 	input [4:0] flagModuleOut;
@@ -12,7 +12,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 	output reg LScntl;
 	output reg ALU_Mux_cntl;
 	output reg WE;
-	output reg irenable, PC_mux, reg_rst;
+	output reg irenable, PC_mux, reg_rst, PC_rst;
 	
 	// FSM States --------------------------------------------------------------------------------
 	
@@ -75,10 +75,11 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			// Write enable for memory
 			WE = 1'b0;
 			// Writeback mux, 1 passes through alu result to wb, 0 changes to memory value.
-			ALU_Mux_cntl = 1'b1;
+			ALU_Mux_cntl = 1'b0;
 			irenable = 1'b0;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
+			PC_rst = 1'b0;
 			end
 			
 			S1: begin
@@ -86,22 +87,24 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			R_enable = 1'b0;
 			LScntl = 1'b1;
 			WE = 1'b0;
-			ALU_Mux_cntl = 1'b1;
-			irenable = 1'b0;
+			ALU_Mux_cntl = 1'b0;
+			irenable = 1'b1;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
+			PC_rst = 1'b0;
 			end
 			
-			//This state is only selected if the instruction is R type
+			//This state is only selected if the instruction is a typical  R/I type
 			S2: begin
 			PC_enable = 1'b1;
 			R_enable = 1'b1; 
 			LScntl = 1'b1;
 			WE = 1'b0;
 			ALU_Mux_cntl = 1'b0;
-			irenable = 1'b1;
+			irenable = 1'b0;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
+			PC_rst = 1'b0;
 			end
 		
 			//This state is only selected if the instruction is store type
@@ -114,6 +117,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			irenable = 1'b1;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
+			PC_rst = 1'b0;
 			end
 		
 			//These two states are only selcted if the instruction is load type
@@ -126,6 +130,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			irenable = 1'b1;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
+			PC_rst = 1'b0;
 			end
 		
 			// Load the value from the address loaded in S4 into a register.
@@ -138,6 +143,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			irenable = 1'b1;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
+			PC_rst = 1'b0;
 			end
 			
 			// Increment the program counter with the brach displacement
@@ -150,6 +156,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			irenable = 1'b1;
 			PC_mux = 1'b1;
 			reg_rst = 1'b0;
+			PC_rst = 1'b0;
 			end
 			
 			// Startup state to initialize registers
@@ -162,6 +169,7 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 			irenable = 1'b0;
 			PC_mux = 1'b0;
 			reg_rst = 1'b1;
+			PC_rst = 1'b1;
 			end
 			default: begin // Do nothing
 				PC_enable = 1'b0;
@@ -171,7 +179,8 @@ module CPU_FSM(clk, rst, PC_enable, R_enable, LScntl, ALU_Mux_cntl, instruction,
 				ALU_Mux_cntl = 1'b0;
 				irenable = 1'b0;
 				PC_mux = 1'b0;
-				reg_rst = 1'b0;			
+				reg_rst = 1'b0;
+				PC_rst = 1'b0;			
 			end
 		endcase
 	end

@@ -8,7 +8,7 @@ input rst;
 
 output [15:0] wbValue;
 // 1Hz clock
-wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst;
+wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst;
 wire [3:0] regA, regB;
 wire [15:0] Din;
 wire [15:0] currentInstruction,outgoinginstruction;
@@ -31,7 +31,8 @@ PC pc(
 	.prev_addr(currentAddress),
 	.disp(imm_val),
 	.branch_select(branch_select),
-	.enable(enablewire)
+	.enable(enablewire),
+	.rst(PC_rst)
 );
 
 // Create a datapath instance
@@ -82,7 +83,8 @@ CPU_FSM FSM(
 .flagModuleOut(flagModuleOut),
 .irenable(IREnable),
 .PC_mux(branch_select),
-.reg_rst(reg_rst)
+.reg_rst(reg_rst),
+.PC_rst(PC_rst)
 );
 
 Instruction_Decoder decoder(

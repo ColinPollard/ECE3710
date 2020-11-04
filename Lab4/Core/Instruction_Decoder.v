@@ -20,7 +20,6 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 	// Update on new instruction.
 	always @(instruction)
 	begin
-		
 		// if bits 15-12 are 0000, R-type
 		if (instruction[15:12] == 4'b0000)
 		begin
@@ -31,7 +30,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rSrc = instruction[3:0];
 			// Don't care
 			immediate = 16'bx;
-			r_or_i = 1'b1;
+			r_or_i = 1'b0;
 		end
 		//LSH
 		else if(instruction[15:12] == 4'b1000 && instruction[7:4] == 4'b0100)
@@ -40,7 +39,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rDest = instruction[11:8];
 			rSrc = instruction[3:0];
 			immediate = 16'bx;
-			r_or_i = 1'b1;
+			r_or_i = 1'b0;
 		end
 		//ASH
 		else if(instruction[15:12] == 4'b1000 && instruction[7:4] == 4'b0110)
@@ -49,7 +48,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rDest = instruction[11:8];
 			rSrc = instruction[3:0];
 			immediate = 16'bx;
-			r_or_i = 1'b1;
+			r_or_i = 1'b0;
 		end
 		//RSH
 		else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b1111)
@@ -58,7 +57,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rDest = instruction[11:8];
 			rSrc = instruction[3:0];
 			immediate = 16'bx;
-			r_or_i = 1'b1;
+			r_or_i = 1'b0;
 		end
 		//WAIT/NOP
 		else if(instruction[15:12] == 4'b0000 && instruction[7:4] == 4'b0000)
@@ -67,7 +66,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rDest = instruction[11:8];
 			rSrc = instruction[3:0];
 			immediate = 16'bx;
-			r_or_i = 1'b1;
+			r_or_i = 1'b0;
 		end
 		//LOAD
 		else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b0000)
@@ -76,7 +75,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rDest = instruction[11:8];
 			rSrc = instruction[3:0];
 			immediate = 16'bx;
-			r_or_i = 1'b1;
+			r_or_i = 1'b0;
 		end
 		//STORE
 		else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b0100)
@@ -85,7 +84,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rDest = instruction[11:8];
 			rSrc = instruction[3:0];
 			immediate = 16'bx;
-			r_or_i = 1'b1;
+			r_or_i = 1'b0;
 		end
 		
 		//Branch/Jump instruction
@@ -95,7 +94,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rDest = 4'bx;
 			rSrc = 4'bx;
 			immediate = $signed(instruction[7:0]);
-			r_or_i = 1'b0;
+			r_or_i = 1'b1;
 		end
 		
 		// I-Type instruction
@@ -108,7 +107,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			rSrc = 4'bx;
 			// Sign extend to 16 bits from 8 bit instruction.
 			immediate = $signed(instruction[7:0]);
-			r_or_i = 1'b0;
+			r_or_i = 1'b1;
 		end
 		
 	end
