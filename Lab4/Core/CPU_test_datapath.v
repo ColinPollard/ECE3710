@@ -2,11 +2,12 @@
 //This module is the same as the cpu_datapath but it
 //does not use the seven seg display
 
-module CPU_test_datapath(slowClock, rst, wbValue);
+module CPU_test_datapath(slowClock, rst, wbValue, write_enable);
 input slowClock;
 input rst;
 
 output [15:0] wbValue;
+output write_enable;
 // 1Hz clock
 wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst;
 wire [3:0] regA, regB;
@@ -18,7 +19,7 @@ wire [9:0] currentAddress,addressinput,wbaddress;
 
 // Set the address to point to 0 initially.
 
-wire write_enable, r_or_i,IREnable;
+wire r_or_i,IREnable;
 wire [4:0] flagModuleOut;
 wire [7:0] op;
 wire [15:0] imm_val;

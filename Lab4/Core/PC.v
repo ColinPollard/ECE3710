@@ -15,7 +15,7 @@ begin
 	else if (enable == 1'b1)
 	begin
 		if(branch_select)
-			address <= prev_addr + disp;
+			address <= $signed(prev_addr) + $signed(disp);
 		else
 			address <= prev_addr + 1'b1;
 	end

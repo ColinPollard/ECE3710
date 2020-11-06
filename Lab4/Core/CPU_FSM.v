@@ -20,7 +20,7 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 	reg[3:0] y;
 	
 	//Parameters for the fsm states
-	parameter[3:0] S0 = 4'h00, S1 = 4'h01, S2 = 4'h02, S3 = 4'h03, S4 = 4'h04, S5 = 4'h05, S6 = 4'h6, STARTUP = 4'h7;
+	parameter[3:0] S0 = 4'h0, S1 = 4'h1, S2 = 4'h2, S3 = 4'h3, S4 = 4'h4, S5 = 4'h5, S6 = 4'h6, STARTUP = 4'h7, NOP = 4'h8;
 						
 	//Update state
 	always @(posedge clk)
@@ -28,7 +28,7 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 		if(rst) 
 			y <= STARTUP;
 			
-		else if(y == STARTUP)
+		else if(y == STARTUP || y == NOP)
 			y <= 0;
 			
 		else if(y == S4) 
@@ -36,9 +36,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 		
 		else if(y == S2 || y == S3 || y == S5 || y == S6) 
 			y <= S0;
-		
-		else if(y < S2)
-			y <= y + 1'b1;
+		else if(y == S0)
+			y <= S1;
 		else 
 		begin
 			//Check to see if the current operation is a load instruction
@@ -50,15 +49,16 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 				y <= S3;
 			
 			//Check to see if the current operation is a branch instruction
-			else if(instruction[15:12] == 4'b1100 && ((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || (instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1]) || instruction[11:8] == 4'b1110))
-				y <= S6;
-				
+			else if(instruction[15:12] == 4'b1100) begin
+				if((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || (instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1]) || instruction[11:8] == 4'b1110)
+					y <= S6;
+				else
+					y <= NOP;
+			end	
 			//If neither it must be an R type instruction
 			else 
 				y <= S2;
-				
-		end
-			
+		end		
 	end
 	
 	//Update output
@@ -153,7 +153,7 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 			LScntl = 1'b1;
 			WE = 1'b0;
 			ALU_Mux_cntl = 1'b0;
-			irenable = 1'b1;
+			irenable = 1'b0;
 			PC_mux = 1'b1;
 			reg_rst = 1'b0;
 			PC_rst = 1'b0;
@@ -171,7 +171,19 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 			reg_rst = 1'b1;
 			PC_rst = 1'b1;
 			end
-			default: begin // Do nothing
+			// Do nothing but update PC
+			NOP: begin
+				PC_enable = 1'b1;
+				R_enable = 1'b0;
+				LScntl = 1'b0;
+				WE = 1'b0;
+				ALU_Mux_cntl = 1'b0;
+				irenable = 1'b0;
+				PC_mux = 1'b0;
+				reg_rst = 1'b0;
+				PC_rst = 1'b0;				
+			end
+			default: begin 
 				PC_enable = 1'b0;
 				R_enable = 1'b0;
 				LScntl = 1'b0;
