@@ -10,8 +10,10 @@ module tb_CPU();
 	wire enable;
 	CPU_test_datapath uut3 (clk, rst, out, enable);
 	
-	always begin 
-		#5 clk = ~clk;
+	always #5 clk = ~clk;
+	always@(posedge clk) begin 
+		if(enable)
+			$display("Output: %d", out);
 	end
 	initial begin
 		//Initialize inputs
