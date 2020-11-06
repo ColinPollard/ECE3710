@@ -132,8 +132,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 			R_enable = 1'b0;
 			LScntl = 1'b0;
 			WE = 1'b0;
-			ALU_Mux_cntl = 1'bx;
-			irenable = 1'b1;
+			ALU_Mux_cntl = 1'b0;
+			irenable = 1'b0;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
 			PC_rst = 1'b0;
@@ -143,10 +143,10 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, inst
 			S5: begin 
 			PC_enable = 1'b1;
 			R_enable = 1'b1;
-			LScntl = 1'bx;
+			LScntl = 1'b0;
 			WE = 1'b0;
-			ALU_Mux_cntl = 1'b0;
-			irenable = 1'b1;
+			ALU_Mux_cntl = 1'b1;
+			irenable = 1'b0;
 			PC_mux = 1'b0;
 			reg_rst = 1'b0;
 			PC_rst = 1'b0;
