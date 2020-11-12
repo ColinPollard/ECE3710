@@ -22,7 +22,7 @@ parameter V_DISPLAY_INT = 10'd480; // 480 lines
 parameter V_FRONT_PORCH = 10'd10;  // 10 lines
 parameter V_TOTAL       = 10'd525; // total width -- 2 + 33 + 480 + 10 = 525
 
-assign hsync = ~((hcount >= H_BACK_PORCH) & (hcount < H_BACK_PORCH + H_SYNC));
+assign hsync = ~((hcount >= H_FRONT_PORCH) & (hcount < H_FRONT_PORCH + H_SYNC));
 assign vsync = ~((vcount >= V_DISPLAY_INT + V_FRONT_PORCH) & (vcount < V_DISPLAY_INT + V_FRONT_PORCH + V_SYNC));
 
 always @(posedge clk) begin
