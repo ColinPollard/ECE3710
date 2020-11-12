@@ -6,7 +6,7 @@ module CPU_datapath(clk, rst, seg7);
 input clk;
 input rst;
 
-output seg7;
+output [6:0] seg7;
 // 1Hz clock
 wire slowClock,enablewire,LScntl,alu_mux_cntl,we;
 wire [3:0] regA, regB;
