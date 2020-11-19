@@ -2,15 +2,16 @@
 // Date: 10/15/2020
 // Test bench for R type functionality.
 
-module CPU_datapath(clk, rst, seg7);
+module CPU_datapath(clk, rst, seg7, en1a, en1b, en2a, en2b);
 input clk;
 input rst;
+input en1a, en1b, en2a, en2b;
 
 output [0:6] seg7;
 // 1Hz clock
-wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select;
+wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,encodermux, ensel;
 wire [3:0] regA, regB;
-wire [15:0] Din;
+wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
 
 // Create a clock divider for slow signal
@@ -28,7 +29,7 @@ wire [9:0] currentAddress,addressinput,wbaddress;
 wire write_enable, r_or_i,IREnable;
 wire [4:0] flagModuleOut;
 wire [7:0] op;
-wire [15:0] imm_val;
+wire [15:0] imm_val,encoderval;
 wire [15:0] wbValue;
 
 // Create a basic program counter
@@ -57,7 +58,9 @@ regfile_alu_datapath datapath(
 	.wbValue(wbValue),
 	.busA(Din),
 	.ALUB(wbaddress),
-	.flagModuleOut(flagModuleOut)
+	.flagModuleOut(flagModuleOut),
+	.encoder_value(enval),
+	.external_encoder_enable(encodermux)
 );
 
 
@@ -119,6 +122,16 @@ IR_Register irRegister(
 .outgoingdata(outgoinginstruction),
 .IREnable(IREnable),
 .clk(slowClock)
+);
+
+encoder encodermodule(
+	.clk(clk),
+	.in1A(en1a),
+	.in1B(en1b),
+	.in2A(en2a),
+	.in2B(en2b),
+	.enval(enval),
+	.en_choose(ensel)
 );
 
 endmodule

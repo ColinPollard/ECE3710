@@ -1,10 +1,10 @@
 // Wrapper for ALU, regfiles, mux, etc.
 // Inputs are all of the control signals
 
-module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB, flagModuleOut);
+module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB, flagModuleOut,encoder_value,external_encoder_enable);
 
-input clk, reg_imm, write_enable, reg_reset, external_write_enable;
-input [15:0] immediate_value, external_write_value;
+input clk, reg_imm, write_enable, reg_reset, external_write_enable,external_encoder_enable;
+input [15:0] immediate_value, external_write_value,encoder_value;
 input [3:0] regA, regB, write_select;
 input [7:0] op;
 
@@ -12,7 +12,7 @@ output [4:0] flagModuleOut;
 // For testing, normally would be a wire.
 output[15:0] wbValue, busA, ALUB;
 
-wire [15:0] busB, ALUC;
+wire [15:0] busB, ALUC,tempwbVal;
 
 
 // BUS B MUX
@@ -28,6 +28,14 @@ mux2to1 wbMUX(
 	.A(ALUC), 
 	.B(external_write_value), 
 	.ctrl(external_write_enable), 
+	.out(tempwbVal)
+);
+
+//encoder value
+mux2to1 encoderMUX(
+	.A(tempwbVal), 
+	.B(encoder_value), 
+	.ctrl(external_encoder_enable), 
 	.out(wbValue)
 );
 
