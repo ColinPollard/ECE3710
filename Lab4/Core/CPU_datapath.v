@@ -2,14 +2,14 @@
 // Date: 10/15/2020
 // Test bench for R type functionality.
 
-module CPU_datapath(clk, rst, seg7, en1a, en1b, en2a, en2b);
+module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,active,done);
 input clk;
 input rst;
 input en1a, en1b, en2a, en2b;
 
-output [0:6] seg7;
+output serial,active,done;
 // 1Hz clock
-wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,encodermux, ensel;
+wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,encodermux, ensel,trans_en;
 wire [3:0] regA, regB;
 wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
@@ -28,7 +28,7 @@ wire [9:0] currentAddress,addressinput,wbaddress;
 
 wire write_enable, r_or_i,IREnable;
 wire [4:0] flagModuleOut;
-wire [7:0] op;
+wire [7:0] op,transmitval;
 wire [15:0] imm_val,encoderval;
 wire [15:0] wbValue;
 
@@ -80,13 +80,6 @@ DualBRAM memoryModule(
 .q_b()
 );
 
-// Seven Segment Converter
-bcd_to_sev_seg segConverter(
-	.bcd(wbValue),
-	.seven_seg(seg7)
-);
-
-
 CPU_FSM FSM(
 .clk(slowClock),
 .rst(rst),
@@ -98,7 +91,10 @@ CPU_FSM FSM(
 .WE(we),
 .flagModuleOut(flagModuleOut),
 .irenable(IREnable),
-.PC_mux(branch_select)
+.PC_mux(branch_select),
+.en_select(ensel),
+.en_mux(encodermux),
+.transmit_enable(trans_en)
 );
 
 Instruction_Decoder decoder(
@@ -132,6 +128,22 @@ encoder encodermodule(
 	.in2B(en2b),
 	.enval(enval),
 	.en_choose(ensel)
+);
+
+uart_tx transmitter(
+.i_Clock(clk),
+.i_Tx_DV(trans_en),
+.i_Tx_Byte(transmitval),
+.o_Tx_Active(active),
+.o_Tx_Serial(serial),
+.o_Tx_Done(done)
+);
+
+
+transmit_encoder encode(
+.incomingval(wbValue),
+.clock(slowClock),
+.outgoingval(transmitval)
 );
 
 endmodule

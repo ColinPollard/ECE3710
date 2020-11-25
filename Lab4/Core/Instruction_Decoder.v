@@ -97,6 +97,27 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			r_or_i = 1'b1;
 		end
 		
+		//Pull from encoders 
+		else if(instruction[15:12] == 4'b1000 && instruction[7:5] == 3'b110)
+		begin
+			op = {instruction[15:12], instruction[7:4]};
+			rDest = instruction[11:8];
+			rSrc = 4'bx;
+			// Don't care
+			immediate = 16'bx;
+			r_or_i = 1'b0;
+		end
+		
+		else if(instruction[15:12] == 4'b1000 && instruction[7:4] == 4'b1111)
+		begin
+			op = {instruction[15:12], instruction[7:4]};
+			rDest = 4'bx;
+			rSrc = instruction[3:0];
+			// Don't care
+			immediate = 16'bx;
+			r_or_i = 1'b0;
+		end
+		
 		// I-Type instruction
 		else
 		begin
