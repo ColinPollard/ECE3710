@@ -6,15 +6,16 @@ module tb_CPU();
 	reg rst, clk;
 
 	// outputs - wires
+	wire serial, active, done, write_enable;
 	wire [15:0] out;
-	wire enable;
-	CPU_test_datapath uut3 (clk, rst, out, enable);
+	
+	CPU_test_datapath uut3 (clk, rst, out, write_enable, serial, active, done);
 	
 	always #5 clk = ~clk;
-	always@(posedge clk) begin 
-		if(enable)
-			$display("Output: %d", out);
-	end
+//	always@(posedge clk) begin 
+//		if(enable)
+//			$display("Output: %d", out);
+//	end
 	initial begin
 		//Initialize inputs
 		clk = 1;

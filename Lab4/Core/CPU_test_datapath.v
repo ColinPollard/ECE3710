@@ -2,14 +2,15 @@
 //This module is the same as the cpu_datapath but it
 //does not use the seven seg display
 
-module CPU_test_datapath(slowClock, rst, wbValue, write_enable);
-input slowClock;
+module CPU_test_datapath(clk, slowClock, rst, wbValue, write_enable, serial, active, done);
+input slowClock, clk;
 input rst;
 
+output serial,active,done;
 output [15:0] wbValue;
 output write_enable;
 // 1Hz clock
-wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst;
+wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst, trans_en, en_select, en_mux;
 wire [3:0] regA, regB;
 wire [15:0] Din;
 wire [15:0] currentInstruction,outgoinginstruction;
@@ -21,7 +22,7 @@ wire [9:0] currentAddress,addressinput,wbaddress;
 
 wire r_or_i,IREnable;
 wire [4:0] flagModuleOut;
-wire [7:0] op;
+wire [7:0] op, transmitval;
 wire [15:0] imm_val;
 
 
@@ -52,7 +53,9 @@ regfile_alu_datapath datapath(
 	.wbValue(wbValue),
 	.busA(Din),
 	.ALUB(wbaddress),
-	.flagModuleOut(flagModuleOut)
+	.flagModuleOut(flagModuleOut),
+	.external_encoder_enable(en_mux),
+	.encoder_value(en_select)
 );
 
 
@@ -85,7 +88,10 @@ CPU_FSM FSM(
 .irenable(IREnable),
 .PC_mux(branch_select),
 .reg_rst(reg_rst),
-.PC_rst(PC_rst)
+.PC_rst(PC_rst),
+.transmit_enable(trans_en),
+.en_select(en_select), 
+.en_mux(en_mux)
 );
 
 Instruction_Decoder decoder(
@@ -109,6 +115,22 @@ IR_Register irRegister(
 .outgoingdata(outgoinginstruction),
 .IREnable(IREnable),
 .clk(slowClock)
+);
+
+uart_tx transmitter(
+.i_Clock(slowClock),
+.i_Tx_DV(trans_en),
+.i_Tx_Byte(wbaddress),
+.o_Tx_Active(active),
+.o_Tx_Serial(serial),
+.o_Tx_Done(done)
+);
+
+
+transmit_encoder encode(
+.incomingval(wbValue),
+.clock(slowClock),
+.outgoingval(transmitval)
 );
 
 endmodule

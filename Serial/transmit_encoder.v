@@ -8,8 +8,6 @@ output reg [7:0] outgoingval;
 always @(posedge clock)
 	begin
 	outgoingval = incomingval[7:0];
-
-
 	end
 
 
