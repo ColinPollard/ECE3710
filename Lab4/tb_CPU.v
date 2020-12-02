@@ -3,7 +3,7 @@
 module tb_CPU();
 
 	// inputs - all registers
-	reg rst, clk;
+	reg rst, clk;//clk2;
 
 	// outputs - wires
 	wire serial, active, done, write_enable;
@@ -11,6 +11,7 @@ module tb_CPU();
 	
 	CPU_test_datapath uut3 (clk, rst, out, write_enable, serial, active, done);
 	
+	//always #5 clk2 = ~clk2;
 	always #5 clk = ~clk;
 //	always@(posedge clk) begin 
 //		if(enable)

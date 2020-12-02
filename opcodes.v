@@ -31,3 +31,4 @@ parameter RSH    = 8'b01001111;
 parameter RSHI   = 8'b10000101;
 parameter ALSH   = 8'b10000111;
 parameter ARSH   = 8'b10001xxx;
+parameter MOV 	  = 8'b00001101;
