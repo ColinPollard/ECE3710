@@ -2,8 +2,8 @@
 //This module is the same as the cpu_datapath but it
 //does not use the seven seg display
 
-module CPU_test_datapath(clk, slowClock, rst, wbValue, write_enable, serial, active, done);
-input slowClock, clk;
+module CPU_test_datapath(slowClock, rst, wbValue, write_enable, serial, active, done);
+input slowClock;//, clk;
 input rst;
 
 output serial,active,done;
