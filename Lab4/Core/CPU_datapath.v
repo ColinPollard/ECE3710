@@ -133,7 +133,7 @@ encoder encodermodule(
 uart_tx transmitter(
 .i_Clock(clk),
 .i_Tx_DV(trans_en),
-.i_Tx_Byte(transmitval),
+.i_Tx_Byte(wbaddress),
 .o_Tx_Active(active),
 .o_Tx_Serial(serial),
 .o_Tx_Done(done)
