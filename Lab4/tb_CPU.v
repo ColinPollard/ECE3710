@@ -8,7 +8,7 @@ module tb_CPU();
 	// outputs - wires
 	wire serial, done, write_enable;
 	
-	CPU_test_datapath uut3 (clk, rst, write_enable, serial, done);
+	CPU_datapath uut3 (clk, rst, write_enable, serial, done);
 	
 	//always #5 clk2 = ~clk2;
 	always #5 clk = ~clk;
@@ -19,8 +19,8 @@ module tb_CPU();
 	initial begin
 		//Initialize inputs
 		clk = 1;
-		rst = 0; #2;
-		rst = 1; #10;
-		rst = 0; #5;		
+		rst = 1; #2;
+		rst = 0; #10;
+		rst = 1; #5;		
 	end
 endmodule
