@@ -24,19 +24,24 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 	//Parameters for the fsm states
 	parameter[3:0] S0 = 4'h0, S1 = 4'h1, S2 = 4'h2, S3 = 4'h3, S4 = 4'h4, S5 = 4'h5, S6 = 4'h6, 
 						STARTUP = 4'h7, NOP = 4'h8, CMP = 4'h9, ENC1 = 4'd10, ENC2 = 4'd11, TRANSMIT = 4'd12,
-						BRANCH_WAIT = 4'd13;
+						BRANCH_WAIT = 4'd13, TRANS_LOAD = 4'd14;
 						
 	//Update state
 	always @(posedge clk)
 	begin
 		if(rst) 
 			y <= STARTUP;
+			
 		else if (y == NOP) begin
 			if(!transmitting)
 				y <= S0;
 			else
 				y <= NOP;
 		end
+		
+		else if(y == TRANS_LOAD)
+			y <= TRANSMIT;
+			
 		else if(y == STARTUP || y == CMP || y == ENC1 || y == ENC2 || y == TRANSMIT || y == BRANCH_WAIT)
 			y <= S0;
 			
@@ -80,7 +85,7 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 			//check for transmit instruction
 			else if((instruction[15:12] == 4'b1000 && instruction[7:4] == 4'b1111)) begin
 				if(!transmitting)
-					y <= TRANSMIT;
+					y <= TRANS_LOAD;
 				else
 					y <= NOP;
 			end
@@ -311,8 +316,23 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
 			end
-			
-			//This still needs to be updated 
+
+			TRANS_LOAD: begin
+				PC_enable = 1'b0;
+				R_enable = 1'b0;
+				LScntl = 1'b1;
+				WE = 1'b0;
+				ALU_Mux_cntl = 1'b0;
+				irenable = 1'b0;
+				PC_mux = 1'b0;
+				reg_rst = 1'b0;
+				PC_rst = 1'b0;
+				en_select = 1'b0;
+				en_mux = 1'b0;
+				transmit_enable = 1'b0;
+				transmit_reg_en = 1'b1;
+			end
+			//Transmit
 			TRANSMIT: begin
 				PC_enable = 1'b1;
 				R_enable = 1'b0;
@@ -326,7 +346,7 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_select = 1'b0;
 				en_mux = 1'b0;
 				transmit_enable = 1'b1;
-				transmit_reg_en = 1'b1;
+				transmit_reg_en = 1'b0;
 			end
 			
 			default: begin 
