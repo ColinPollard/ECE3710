@@ -10,7 +10,7 @@ output serial,done;
 wire [15:0] wbValue;
 output write_enable;
 // 1Hz clock
-wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst, trans_en, en_select, en_mux;
+wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst, trans_en, en_select, en_mux, enval;
 wire [3:0] regA, regB;
 wire [15:0] Din;
 wire [15:0] currentInstruction,outgoinginstruction;
@@ -55,7 +55,7 @@ regfile_alu_datapath datapath(
 	.ALUB(wbaddress),
 	.flagModuleOut(flagModuleOut),
 	.external_encoder_enable(en_mux),
-	.encoder_value(en_select)
+	.encoder_value(enval)
 );
 
 
