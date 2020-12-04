@@ -108,6 +108,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			r_or_i = 1'b0;
 		end
 		
+		//Transmit instruction
 		else if(instruction[15:12] == 4'b1000 && instruction[7:4] == 4'b1111)
 		begin
 			op = {instruction[15:12], instruction[7:4]};

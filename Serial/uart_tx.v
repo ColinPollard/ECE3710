@@ -1,10 +1,10 @@
 // CLKS_PER_BIT = (Frequency of i_Clock)/(Frequency of UART)
-// 50 MHz Clock, 115200 baud UART
-// (50000000)/(115200) = 435
-// The actual value was 434.028 but we rounded up
+// 50 MHz Clock, 500000 baud UART
+// (50000000)/(500000) = 100
+// The actual value was 100
   
 module uart_tx 
-  #(parameter CLKS_PER_BIT = 435)
+  #(parameter CLKS_PER_BIT = 100)
   (
    input       i_Clock,
    input       i_Tx_DV,
@@ -21,7 +21,7 @@ module uart_tx
   parameter s_CLEANUP      = 3'b100;
    
   reg [2:0]    r_SM_Main     = 0;
-  reg [9:0]    r_Clock_Count = 0;
+  reg [7:0]    r_Clock_Count = 0;
   reg [2:0]    r_Bit_Index   = 0;
   reg [7:0]    r_Tx_Data     = 0;
   reg          r_Tx_Done     = 0;

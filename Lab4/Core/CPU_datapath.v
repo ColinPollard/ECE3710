@@ -1,9 +1,8 @@
 // Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
-// Test bench for R type functionality.
 
-module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,active,done);
-input clk;
+module CPU_datapath(clk1, clk2, rst, en1a, en1b, en2a, en2b, serial,active,done);
+input clk1,clk2;
 input rst;
 input en1a, en1b, en2a, en2b;
 
@@ -15,11 +14,11 @@ wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
 
 // Create a clock divider for slow signal
-clk_divider divider(
-.clk_in(clk), 
-.rst(1'b0), 
-.clk_out(slowClock)
-);
+//clk_divider divider(
+//.clk_in(clk), 
+//.rst(1'b0), 
+//.clk_out(slowClock)
+//);
 
 // Current address of the program counter
 wire [9:0] currentAddress,addressinput,wbaddress;
@@ -34,7 +33,7 @@ wire [15:0] wbValue;
 
 // Create a basic program counter
 PC pc(
-	.clk(slowClock), 
+	.clk(clk2), 
 	.address(currentAddress),
 	.prev_addr(currentAddress),
 	.disp(imm_val),
@@ -44,7 +43,7 @@ PC pc(
 
 // Create a datapath instance
 regfile_alu_datapath datapath(
-	.clk(slowClock), 
+	.clk(clk2), 
 	.write_enable(write_enable), 
 	.write_select(regA), 
 	.external_write_value(currentInstruction), 
@@ -74,14 +73,14 @@ DualBRAM memoryModule(
 .addr_b(10'd0),
 .we_a(we),
 .we_b(1'b0),
-.clk_a(clk),
-.clk_b(clk),
+.clk_a(clk2),
+.clk_b(clk2),
 .q_a(currentInstruction),
 .q_b()
 );
 
 CPU_FSM FSM(
-.clk(slowClock),
+.clk(clk2),
 .rst(rst),
 .PC_enable(enablewire),
 .R_enable(write_enable),
@@ -117,11 +116,11 @@ IR_Register irRegister(
 .incomingdata(currentInstruction),
 .outgoingdata(outgoinginstruction),
 .IREnable(IREnable),
-.clk(slowClock)
+.clk(clk2)
 );
 
 encoder encodermodule(
-	.clk(clk),
+	.clk(clk2),
 	.in1A(en1a),
 	.in1B(en1b),
 	.in2A(en2a),
@@ -131,9 +130,9 @@ encoder encodermodule(
 );
 
 uart_tx transmitter(
-.i_Clock(clk),
+.i_Clock(clk2),
 .i_Tx_DV(trans_en),
-.i_Tx_Byte(transmitval),
+.i_Tx_Byte(wbaddress),
 .o_Tx_Active(active),
 .o_Tx_Serial(serial),
 .o_Tx_Done(done)
