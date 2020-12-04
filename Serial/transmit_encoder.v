@@ -10,6 +10,4 @@ always @(posedge clock)
 	outgoingval = incomingval[7:0];
 	end
 
-
-
 endmodule
