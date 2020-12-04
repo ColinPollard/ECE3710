@@ -6,10 +6,9 @@ module tb_CPU();
 	reg rst, clk;//clk2;
 
 	// outputs - wires
-	wire serial, active, done, write_enable;
-	wire [15:0] out;
+	wire serial, done, write_enable;
 	
-	CPU_test_datapath uut3 (clk, rst, out, write_enable, serial, active, done);
+	CPU_test_datapath uut3 (clk, rst, write_enable, serial, done);
 	
 	//always #5 clk2 = ~clk2;
 	always #5 clk = ~clk;

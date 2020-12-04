@@ -2,11 +2,11 @@
 //This module is the same as the cpu_datapath but it
 //does not use the seven seg display
 
-module CPU_test_datapath(slowClock, rst, write_enable, serial, active, done);
+module CPU_test_datapath(slowClock, rst, write_enable, serial, done);
 input slowClock;//, clk;
 input rst;
 
-output serial,active,done;
+output serial,done;
 wire [15:0] wbValue;
 output write_enable;
 // 1Hz clock
@@ -20,7 +20,7 @@ wire [9:0] currentAddress,addressinput,wbaddress;
 
 // Set the address to point to 0 initially.
 
-wire r_or_i,IREnable;
+wire r_or_i,IREnable, trans_reg_en, transmitting;
 wire [4:0] flagModuleOut;
 wire [7:0] op, transmitval;
 wire [15:0] imm_val;
@@ -91,7 +91,9 @@ CPU_FSM FSM(
 .PC_rst(PC_rst),
 .transmit_enable(trans_en),
 .en_select(en_select), 
-.en_mux(en_mux)
+.en_mux(en_mux),
+.transmitting(transmitting),
+.transmit_reg_en(trans_reg_en)
 );
 
 Instruction_Decoder decoder(
@@ -120,14 +122,15 @@ IR_Register irRegister(
 uart_tx transmitter(
 .i_Clock(slowClock),
 .i_Tx_DV(trans_en),
-.i_Tx_Byte(wbaddress),
-.o_Tx_Active(active),
+.i_Tx_Byte(transmitval),
+.o_Tx_Active(transmitting),
 .o_Tx_Serial(serial),
 .o_Tx_Done(done)
 );
 
 
 transmit_encoder encode(
+.write_en(trans_reg_en),
 .incomingval(wbaddress),
 .clock(slowClock),
 .outgoingval(transmitval)

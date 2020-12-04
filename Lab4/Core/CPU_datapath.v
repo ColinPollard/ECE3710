@@ -1,14 +1,14 @@
 // Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 
-module CPU_datapath(clk1, clk2, rst, en1a, en1b, en2a, en2b, serial,active,done);
-input clk1,clk2;
+module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial);
+input clk;
 input rst;
 input en1a, en1b, en2a, en2b;
 
-output serial,active,done;
+output serial;
 // 1Hz clock
-wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,encodermux, ensel,trans_en;
+wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,encodermux, ensel,trans_en, active, done;
 wire [3:0] regA, regB;
 wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
@@ -33,7 +33,7 @@ wire [15:0] wbValue;
 
 // Create a basic program counter
 PC pc(
-	.clk(clk2), 
+	.clk(clk), 
 	.address(currentAddress),
 	.prev_addr(currentAddress),
 	.disp(imm_val),
@@ -43,7 +43,7 @@ PC pc(
 
 // Create a datapath instance
 regfile_alu_datapath datapath(
-	.clk(clk2), 
+	.clk(clk), 
 	.write_enable(write_enable), 
 	.write_select(regA), 
 	.external_write_value(currentInstruction), 
@@ -73,14 +73,14 @@ DualBRAM memoryModule(
 .addr_b(10'd0),
 .we_a(we),
 .we_b(1'b0),
-.clk_a(clk2),
-.clk_b(clk2),
+.clk_a(clk),
+.clk_b(clk),
 .q_a(currentInstruction),
 .q_b()
 );
 
 CPU_FSM FSM(
-.clk(clk2),
+.clk(clk),
 .rst(rst),
 .PC_enable(enablewire),
 .R_enable(write_enable),
@@ -116,11 +116,11 @@ IR_Register irRegister(
 .incomingdata(currentInstruction),
 .outgoingdata(outgoinginstruction),
 .IREnable(IREnable),
-.clk(clk2)
+.clk(clk)
 );
 
 encoder encodermodule(
-	.clk(clk2),
+	.clk(clk),
 	.in1A(en1a),
 	.in1B(en1b),
 	.in2A(en2a),
@@ -130,7 +130,7 @@ encoder encodermodule(
 );
 
 uart_tx transmitter(
-.i_Clock(clk2),
+.i_Clock(clk),
 .i_Tx_DV(trans_en),
 .i_Tx_Byte(wbaddress),
 .o_Tx_Active(active),
@@ -141,7 +141,7 @@ uart_tx transmitter(
 
 transmit_encoder encode(
 .incomingval(wbaddress),
-.clock(slowClock),
+.clock(clk),
 .outgoingval(transmitval)
 );
 
