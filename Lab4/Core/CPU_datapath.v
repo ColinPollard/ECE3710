@@ -141,7 +141,7 @@ uart_tx transmitter(
 
 
 transmit_encoder encode(
-.incomingval(wbValue),
+.incomingval(wbaddress),
 .clock(slowClock),
 .outgoingval(transmitval)
 );

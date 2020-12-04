@@ -2,12 +2,12 @@
 //This module is the same as the cpu_datapath but it
 //does not use the seven seg display
 
-module CPU_test_datapath(slowClock, rst, wbValue, write_enable, serial, active, done);
+module CPU_test_datapath(slowClock, rst, write_enable, serial, active, done);
 input slowClock;//, clk;
 input rst;
 
 output serial,active,done;
-output [15:0] wbValue;
+wire [15:0] wbValue;
 output write_enable;
 // 1Hz clock
 wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst, trans_en, en_select, en_mux;
@@ -128,7 +128,7 @@ uart_tx transmitter(
 
 
 transmit_encoder encode(
-.incomingval(wbValue),
+.incomingval(wbaddress),
 .clock(slowClock),
 .outgoingval(transmitval)
 );
