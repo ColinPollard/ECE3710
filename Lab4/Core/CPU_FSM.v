@@ -295,7 +295,11 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				PC_mux = 1'b0;
 				reg_rst = 1'b0;
 				PC_rst = 1'b0;
-				en_select = 1'b1;
+				
+				//i changed this
+				en_select = 1'b0;
+				//
+				
 				en_mux = 1'b1;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;

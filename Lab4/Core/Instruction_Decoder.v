@@ -102,7 +102,11 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 		begin
 			op = {instruction[15:12], instruction[7:4]};
 			rDest = instruction[11:8];
-			rSrc = 4'bx;
+			
+			//i changed this
+			rSrc = instruction[3:0];
+			//
+			
 			// Don't care
 			immediate = 16'bx;
 			r_or_i = 1'b0;
