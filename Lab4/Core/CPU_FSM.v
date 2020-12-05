@@ -70,7 +70,10 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 			
 			//Check to see if the current operation is a branch instruction
 			else if(instruction[15:12] == 4'b1100) begin
-				if((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || (instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1]) || instruction[11:8] == 4'b1110)
+				if((instruction[11:8] == 4'b0000 && flagModuleOut[3]) || 
+					(instruction[11:8] == 4'b1100 && !flagModuleOut[3] && flagModuleOut[1]) || 
+					instruction[11:8] == 4'b1110 ||
+					instruction[11:8] == 4'b1011 && flagModuleOut[2])
 					y <= S6;
 				else
 					y <= BRANCH_WAIT;
