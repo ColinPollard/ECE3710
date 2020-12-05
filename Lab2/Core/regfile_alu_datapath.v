@@ -1,18 +1,20 @@
 // Wrapper for ALU, regfiles, mux, etc.
 // Inputs are all of the control signals
 
-module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB, flagModuleOut,encoder_value,external_encoder_enable);
+module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB, flagModuleOut,encoder_value,external_encoder_enable,p1display,p2display);
 
 input clk, reg_imm, write_enable, reg_reset, external_write_enable,external_encoder_enable;
 input [15:0] immediate_value, external_write_value,encoder_value;
 input [3:0] regA, regB, write_select;
 input [7:0] op;
 
+output [6:0] p1display,p2display;
+
 output [4:0] flagModuleOut;
 // For testing, normally would be a wire.
 output[15:0] wbValue, busA, ALUB;
 
-wire [15:0] busB, ALUC,tempwbVal;
+wire [15:0] busB, ALUC,tempwbVal,p1score,p2score;
 
 
 // BUS B MUX
@@ -49,7 +51,9 @@ regfile regfileInstance(
 	.writeSelect(write_select), 
 	.writeEnable(write_enable), 
 	.clock(clk), 
-	.reset(reg_reset)
+	.reset(reg_reset),
+	.r14(p1score),
+	.r15(p2score)
 );
 
 wire [4:0] ALUFlagOut;
@@ -69,6 +73,16 @@ alu aluInstance (
 	.C(ALUC), 
 	.Opcode(op), 
 	.Flags(ALUFlagOut)
+);
+
+bcd_to_sev_seg seg1(
+.bcd(p1score),
+.seven_seg(p1display)
+);
+
+bcd_to_sev_seg seg2(
+.bcd(p2score),
+.seven_seg(p2display)
 );
 
 endmodule
