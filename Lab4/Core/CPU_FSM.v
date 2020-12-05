@@ -384,7 +384,7 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
 				en1rst = 1'b0;
-				en2rst= 1'b0;
+				en2rst= 1'b1;
 			end
 			
 			TRANS_LOAD: begin
