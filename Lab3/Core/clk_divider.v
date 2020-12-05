@@ -27,7 +27,7 @@
 			//clk_out <= ~clk_out;
 		//end
 		
-		else if(count == 25000000) begin
+		else if(count == 250000) begin
 			count <= 25'd0;
 			clk_out <= ~clk_out;
 		end
