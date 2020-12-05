@@ -8,7 +8,7 @@ input en1a, en1b, en2a, en2b;
 
 output serial;
 // 1Hz clock
-wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,en_mux, ensel,trans_en, done, trans_reg_en,transmitting,reg_rst,en_select,encoder_rst;
+wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,en_mux, ensel,trans_en, done, trans_reg_en,transmitting,reg_rst,en_select,encoder1_rst,encoder2_rst;
 wire [3:0] regA, regB;
 wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
@@ -101,7 +101,9 @@ CPU_FSM FSM(
 .en_select(en_select), 
 .en_mux(en_mux),
 .transmitting(transmitting),
-.transmit_reg_en(trans_reg_en)
+.transmit_reg_en(trans_reg_en),
+.en1rst(encoder1_rst),
+.en2rst(encoder2_rst)
 );
 
 Instruction_Decoder decoder(
@@ -129,7 +131,8 @@ IR_Register irRegister(
 
 encoder encodermodule(
 	.clk(clk),
-	.rst(encoder_rst),
+	.rst1(encoder1_rst),
+	.rst2(encoder2_rst),
 	.in1A(en1a),
 	.in1B(en1b),
 	.in2A(en2a),

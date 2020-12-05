@@ -1,5 +1,5 @@
-module encoder(clk,rst, in1A, in1B, in2A, in2B, enval,en_choose);
-input clk, rst, in1A, in1B,in2A, in2B,en_choose;
+module encoder(clk,rst1, rst2, in1A, in1B, in2A, in2B, enval,en_choose);
+input clk, rst1, rst2, in1A, in1B,in2A, in2B,en_choose;
 output [15:0] enval;
 
 //This is for rotary encoder 1
@@ -13,7 +13,7 @@ wire count_direction1 = in1A_delayed[1] ^ in1B_delayed[2];
 reg [7:0] count1;
 always @(posedge clk)
 begin
-	if (rst == 1)
+	if (rst1 == 1)
 		count1 <= 0;
 		
 	else begin
@@ -38,7 +38,7 @@ wire count_direction2 = in2A_delayed[1] ^ in2B_delayed[2];
 reg [7:0] count2;
 always @(posedge clk)
 begin
-	if (rst == 1)
+	if (rst2 == 1)
 		count2 <= 0;
 		
 	else begin	

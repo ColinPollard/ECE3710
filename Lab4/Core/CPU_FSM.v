@@ -4,7 +4,7 @@
 
 module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl, 
 					instruction, WE, flagModuleOut,irenable, PC_mux, reg_rst, 
-					en_select, en_mux,transmit_enable, transmitting, transmit_reg_en);
+					en_select, en_mux,transmit_enable, transmitting, transmit_reg_en,en1rst,en2rst);
 	input clk, rst, transmitting;
 	input [15:0] instruction;
 	input [4:0] flagModuleOut;
@@ -14,17 +14,17 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 	output reg LScntl;
 	output reg ALU_Mux_cntl;
 	output reg WE;
-	output reg irenable, PC_mux, reg_rst, PC_rst, en_select, en_mux,transmit_enable, transmit_reg_en;
+	output reg irenable, PC_mux, reg_rst, PC_rst, en_select, en_mux,transmit_enable, transmit_reg_en,en1rst,en2rst;
 	
 	// FSM States --------------------------------------------------------------------------------
 	
 	//Store state
-	reg[3:0] y;
+	reg[4:0] y;
 	
 	//Parameters for the fsm states
-	parameter[3:0] S0 = 4'h0, S1 = 4'h1, S2 = 4'h2, S3 = 4'h3, S4 = 4'h4, S5 = 4'h5, S6 = 4'h6, 
-						STARTUP = 4'h7, NOP = 4'h8, CMP = 4'h9, ENC1 = 4'd10, ENC2 = 4'd11, TRANSMIT = 4'd12,
-						BRANCH_WAIT = 4'd13, TRANS_LOAD = 4'd14;
+	parameter[4:0] S0 = 5'h0, S1 = 5'h1, S2 = 5'h2, S3 = 5'h3, S4 = 5'h4, S5 = 5'h5, S6 = 5'h6, 
+						STARTUP = 5'h7, NOP = 5'h8, CMP = 5'h9, ENC1 = 5'd10, ENC2 = 5'd11, TRANSMIT = 5'd12,
+						BRANCH_WAIT = 5'd13, TRANS_LOAD = 5'd14, EN1CLR = 5'd15, EN2CLR = 5'd16;
 						
 	//Update state
 	always @(posedge clk)
@@ -42,7 +42,13 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 		else if(y == TRANS_LOAD)
 			y <= TRANSMIT;
 			
-		else if(y == STARTUP || y == CMP || y == ENC1 || y == ENC2 || y == TRANSMIT || y == BRANCH_WAIT)
+		else if (y == ENC1)
+			y <= EN1CLR;
+			
+		else if (y == ENC2)
+			y <= EN2CLR;
+			
+		else if(y == STARTUP || y == CMP || y == EN1CLR || y == EN2CLR || y == TRANSMIT || y == BRANCH_WAIT)
 			y <= S0;
 			
 		else if(y == S4) 
@@ -118,6 +124,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			
 			S1: begin
@@ -134,6 +142,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			
 			//This state is only selected if the instruction is a typical  R/I type
@@ -151,6 +161,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 		
 			//This state is only selected if the instruction is store type
@@ -168,6 +180,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 		
 			//These two states are only selcted if the instruction is load type
@@ -185,6 +199,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 		
 			// Load the value from the address loaded in S4 into a register.
@@ -202,6 +218,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			
 			// Increment the program counter with the brach displacement
@@ -219,6 +237,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			
 			// Startup state to initialize registers
@@ -236,6 +256,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			// Do nothing but update PC
 			BRANCH_WAIT: begin
@@ -251,7 +273,9 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_select = 1'b0;
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
-				transmit_reg_en = 1'b0;					
+				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;				
 			end
 			// Do nothing
 			NOP: begin
@@ -267,7 +291,9 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_select = 1'b0;
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
-				transmit_reg_en = 1'b0;					
+				transmit_reg_en = 1'b0;	
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			CMP: begin
 				PC_enable = 1'b1;
@@ -283,10 +309,12 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			
 			ENC1: begin
-				PC_enable = 1'b1;
+				PC_enable = 1'b0;
 				R_enable = 1'b1; 
 				LScntl = 1'b1;
 				WE = 1'b0;
@@ -299,10 +327,31 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b1;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			
-			ENC2: begin
+			EN1CLR: begin
 				PC_enable = 1'b1;
+				R_enable = 1'b0; 
+				LScntl = 1'b1;
+				WE = 1'b0;
+				ALU_Mux_cntl = 1'b0;
+				irenable = 1'b0;
+				PC_mux = 1'b0;
+				reg_rst = 1'b0;
+				PC_rst = 1'b0;
+				en_select = 1'b0;
+				en_mux = 1'b0;
+				transmit_enable = 1'b0;
+				transmit_reg_en = 1'b0;
+				en1rst = 1'b1;
+				en2rst= 1'b0;
+			end
+			
+			
+			ENC2: begin
+				PC_enable = 1'b0;
 				R_enable = 1'b1; 
 				LScntl = 1'b1;
 				WE = 1'b0;
@@ -315,8 +364,29 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b1;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 
+			//this also needs to be updated
+			EN2CLR: begin
+				PC_enable = 1'b1;
+				R_enable = 1'b0; 
+				LScntl = 1'b1;
+				WE = 1'b0;
+				ALU_Mux_cntl = 1'b0;
+				irenable = 1'b0;
+				PC_mux = 1'b0;
+				reg_rst = 1'b0;
+				PC_rst = 1'b0;
+				en_select = 1'b1;
+				en_mux = 1'b0;
+				transmit_enable = 1'b0;
+				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
+			end
+			
 			TRANS_LOAD: begin
 				PC_enable = 1'b0;
 				R_enable = 1'b0;
@@ -331,6 +401,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b1;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			//Transmit
 			TRANSMIT: begin
@@ -347,6 +419,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b1;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 			
 			default: begin 
@@ -363,6 +437,8 @@ module CPU_FSM(clk, rst, PC_enable, PC_rst, R_enable, LScntl, ALU_Mux_cntl,
 				en_mux = 1'b0;
 				transmit_enable = 1'b0;
 				transmit_reg_en = 1'b0;
+				en1rst = 1'b0;
+				en2rst= 1'b0;
 			end
 		endcase
 	end
