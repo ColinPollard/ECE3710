@@ -16,7 +16,7 @@ module DualBRAM
 	
 	initial
 	begin
-		$readmemb("/home/lukemajors/Documents/ECE3710/Lab3/Core/init.txt", ram);
+		$readmemb("/Users/ianla/Documents/Junior College Classes/3710/Project Files/ECE3710/Lab3/Core/init.txt", ram);
 	end
 	
 	always @ (posedge clk_a)

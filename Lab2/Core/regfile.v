@@ -30,10 +30,12 @@ endmodule
 
 
 // Register file, allows reading and writing from 16 registers.
-module regfile(readA, readB, selectA, selectB, writeValue, writeSelect, writeEnable, clock, reset);
+module regfile(readA, readB, selectA, selectB, writeValue, writeSelect, writeEnable, clock, reset,r14,r15);
 
 // Output ports A and B
 output [15:0] readA, readB;
+
+output [15:0] r14, r15;
 
 // Value to write to register
 input[15:0] writeValue;
@@ -48,7 +50,7 @@ input[3:0] writeSelect, selectA, selectB;
 input clock;
 
 // Internal 16 bit signal to enable single registers.
-wire [15:0] regEnable, r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15;
+wire [15:0] regEnable, r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13;
 
 // Create a decoder to enable registers.
 decoder decoder0(writeSelect, writeEnable, regEnable);
@@ -70,6 +72,7 @@ Register Inst12(writeValue, regEnable[12], clock, r12, reset);
 Register Inst13(writeValue, regEnable[13], clock, r13, reset);
 Register Inst14(writeValue, regEnable[14], clock, r14, reset);
 Register Inst15(writeValue, regEnable[15], clock, r15, reset); 
+
 
 // Muxes for selecting output a, b
 mux16to1 muxA(r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, selectA, readA);

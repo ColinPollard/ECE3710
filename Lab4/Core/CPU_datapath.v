@@ -1,8 +1,8 @@
 // Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 
-module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial);
-input clk;
+module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2);
+input clk, button1,button2;
 input rst;
 input en1a, en1b, en2a, en2b;
 
@@ -12,6 +12,8 @@ wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,en_mux, ensel,tr
 wire [3:0] regA, regB;
 wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
+
+output [6:0] display1,display2;
 
 // Create a clock divider for slow signal
 clk_divider divider(
@@ -25,7 +27,7 @@ wire [9:0] currentAddress,addressinput,wbaddress;
 
 // Set the address to point to 0 initially.
 
-wire write_enable, r_or_i,IREnable,PC_rst;
+wire write_enable, r_or_i,IREnable,PC_rst,buttonand;
 wire [4:0] flagModuleOut;
 wire [7:0] op,transmitval;
 wire [15:0] imm_val,encoderval;
@@ -60,7 +62,9 @@ regfile_alu_datapath datapath(
 	.ALUB(wbaddress),
 	.flagModuleOut(flagModuleOut),
 	.encoder_value(enval),
-	.external_encoder_enable(en_mux)
+	.external_encoder_enable(en_mux),
+	.p1display(display1),
+	.p2display(display2)
 );
 
 
@@ -82,8 +86,8 @@ DualBRAM memoryModule(
 
 CPU_FSM FSM(
 .clk(clk),
-//i changed this to  a positive
-.rst(~rst),
+//this changes based on button input
+.rst(~buttonand),
 
 //
 .PC_enable(enablewire),
@@ -156,6 +160,13 @@ transmit_encoder encode(
 .incomingval(wbaddress),
 .clock(clk),
 .outgoingval(transmitval)
+);
+
+buttonand andgate(
+.button1(button1),
+.button2(button2),
+.clk(clk),
+.buttonand(buttonand)
 );
 
 endmodule
