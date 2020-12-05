@@ -1,0 +1,11 @@
+SUB R1, R1 # R1 is the index
+ADDI $1, R2
+
+.Start
+CMPI $5, R1 # Go until it is 5
+BEQ End
+ADDI $1, R1 # Increment index
+JMP Start
+
+.End
+AND R1, R1 # Zero it out.

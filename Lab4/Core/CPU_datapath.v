@@ -82,7 +82,10 @@ DualBRAM memoryModule(
 
 CPU_FSM FSM(
 .clk(clk),
+//i changed this to  a positive
 .rst(~rst),
+
+//
 .PC_enable(enablewire),
 .R_enable(write_enable),
 .LScntl(LScntl),
