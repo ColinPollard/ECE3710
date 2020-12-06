@@ -39,22 +39,22 @@ mux2to1 encoderMUX(
 	.A(tempwbVal), 
 	.B(encoder_value), 
 	.ctrl(external_encoder_enable), 
-	.out(tempwbval2)
-);
-
-mux2to1 SwitchesMUX(
-	.A(switchL), 
-	.B(switchR), 
-	.ctrl(switch_select), 
-	.out(switchval)
-);
-
-mux2to1 LoadswitchMUX(
-	.A(tempwbval2), 
-	.B(switchval), 
-	.ctrl(switch_mux), 
 	.out(wbValue)
 );
+
+//mux2to1 SwitchesMUX(
+	//.A(switchL), 
+	//.B(switchR), 
+	//.ctrl(switch_select), 
+	//.out(switchval)
+//);
+
+//mux2to1 LoadswitchMUX(
+	//.A(tempwbval2), 
+	//.B(switchval), 
+	//.ctrl(switch_mux), 
+	//.out(wbValue)
+//);
 
 
 

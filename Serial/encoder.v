@@ -10,7 +10,7 @@ always @(posedge clk) in1B_delayed <= {in1B_delayed[1:0], in1B};
 wire count_enable1 = in1A_delayed[1] ^ in1A_delayed[2] ^ in1B_delayed[1] ^ in1B_delayed[2];
 wire count_direction1 = in1A_delayed[1] ^ in1B_delayed[2];
 
-reg [7:0] count1;
+reg [15:0] count1;
 always @(posedge clk)
 begin
 	if (rst1 == 1)
@@ -35,7 +35,7 @@ always @(posedge clk) in2B_delayed <= {in2B_delayed[1:0], in2B};
 wire count_enable2 = in2A_delayed[1] ^ in2A_delayed[2] ^ in2B_delayed[1] ^ in2B_delayed[2];
 wire count_direction2 = in2A_delayed[1] ^ in2B_delayed[2];
 
-reg [7:0] count2;
+reg [15:0] count2;
 always @(posedge clk)
 begin
 	if (rst2 == 1)

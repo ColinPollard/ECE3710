@@ -93,7 +93,7 @@ DualBRAM memoryModule(
 CPU_FSM FSM(
 .clk(clk),
 //this changes based on button input
-.rst(~buttonand),
+.rst(~rst),
 
 //
 .PC_enable(enablewire),
