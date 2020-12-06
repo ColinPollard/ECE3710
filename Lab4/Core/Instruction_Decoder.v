@@ -59,6 +59,15 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 			immediate = 16'bx;
 			r_or_i = 1'b0;
 		end
+		//ARSH
+		else if(instruction[15:12] == 4'b1000 && instruction[7:4] == 4'b1000)
+		begin
+			op = {instruction[15:12], instruction[7:4]};
+			rDest = instruction[11:8];
+			rSrc = instruction[3:0];
+			immediate = 16'bx;
+			r_or_i = 1'b0;
+		end
 		//WAIT/NOP
 		else if(instruction[15:12] == 4'b0000 && instruction[7:4] == 4'b0000)
 		begin
