@@ -1,34 +1,39 @@
-//Top level module used to test the cpu
-//This module is the same as the cpu_datapath but it
-//does not use the seven seg display
+// Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
+// Date: 10/15/2020
 
-module CPU_test_datapath(slowClock, rst, write_enable, serial, done);
-input slowClock;//, clk;
+module CPU_test_datapath(clk, rst, en1a, en1b, en2a, en2b, serial);
+input clk;
 input rst;
+input en1a, en1b, en2a, en2b;
 
-output serial,done;
-wire [15:0] wbValue;
-output write_enable;
+output serial;
 // 1Hz clock
-wire enablewire,LScntl,alu_mux_cntl,we, branch_select, reg_rst, PC_rst, trans_en, en_select, en_mux, enval;
+wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,en_mux, ensel,trans_en, done, trans_reg_en,transmitting,reg_rst,en_select,encoder1_rst,encoder2_rst;
 wire [3:0] regA, regB;
-wire [15:0] Din;
+wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
+
+// Create a clock divider for slow signal
+clk_divider divider(
+.clk_in(clk), 
+.rst(1'b0), 
+.clk_out(slowClock)
+);
 
 // Current address of the program counter
 wire [9:0] currentAddress,addressinput,wbaddress;
 
 // Set the address to point to 0 initially.
 
-wire r_or_i,IREnable, trans_reg_en, transmitting;
+wire write_enable, r_or_i,IREnable,PC_rst;
 wire [4:0] flagModuleOut;
-wire [7:0] op, transmitval;
-wire [15:0] imm_val;
-
+wire [7:0] op,transmitval;
+wire [15:0] imm_val,encoderval;
+wire [15:0] wbValue;
 
 // Create a basic program counter
 PC pc(
-	.clk(slowClock), 
+	.clk(clk), 
 	.address(currentAddress),
 	.prev_addr(currentAddress),
 	.disp(imm_val),
@@ -39,7 +44,7 @@ PC pc(
 
 // Create a datapath instance
 regfile_alu_datapath datapath(
-	.clk(slowClock), 
+	.clk(clk), 
 	.write_enable(write_enable), 
 	.write_select(regA), 
 	.external_write_value(currentInstruction), 
@@ -54,8 +59,10 @@ regfile_alu_datapath datapath(
 	.busA(Din),
 	.ALUB(wbaddress),
 	.flagModuleOut(flagModuleOut),
+	.encoder_value(enval),
 	.external_encoder_enable(en_mux),
-	.encoder_value(enval)
+	.p1display(display1),
+	.p2display(display2)
 );
 
 
@@ -69,14 +76,14 @@ DualBRAM memoryModule(
 .addr_b(10'd0),
 .we_a(we),
 .we_b(1'b0),
-.clk_a(slowClock),
-.clk_b(slowClock),
+.clk_a(clk),
+.clk_b(clk),
 .q_a(currentInstruction),
 .q_b()
 );
 
 CPU_FSM FSM(
-.clk(slowClock),
+.clk(clk),
 .rst(rst),
 .PC_enable(enablewire),
 .R_enable(write_enable),
@@ -93,7 +100,9 @@ CPU_FSM FSM(
 .en_select(en_select), 
 .en_mux(en_mux),
 .transmitting(transmitting),
-.transmit_reg_en(trans_reg_en)
+.transmit_reg_en(trans_reg_en),
+.en1rst(encoder1_rst),
+.en2rst(encoder2_rst)
 );
 
 Instruction_Decoder decoder(
@@ -116,11 +125,23 @@ IR_Register irRegister(
 .incomingdata(currentInstruction),
 .outgoingdata(outgoinginstruction),
 .IREnable(IREnable),
-.clk(slowClock)
+.clk(clk)
+);
+
+encoder encodermodule(
+	.clk(clk),
+	.rst1(encoder1_rst),
+	.rst2(encoder2_rst),
+	.in1A(en1a),
+	.in1B(en1b),
+	.in2A(en2a),
+	.in2B(en2b),
+	.enval(enval),
+	.en_choose(en_select)
 );
 
 uart_tx transmitter(
-.i_Clock(slowClock),
+.i_Clock(clk),
 .i_Tx_DV(trans_en),
 .i_Tx_Byte(transmitval),
 .o_Tx_Active(transmitting),
@@ -132,7 +153,7 @@ uart_tx transmitter(
 transmit_encoder encode(
 .write_en(trans_reg_en),
 .incomingval(wbaddress),
-.clock(slowClock),
+.clock(clk),
 .outgoingval(transmitval)
 );
 
