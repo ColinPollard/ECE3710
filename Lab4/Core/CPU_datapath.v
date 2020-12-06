@@ -1,14 +1,16 @@
 // Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 
-module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2);
+module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2,switchesL,switchesR);
 input clk, button1,button2;
 input rst;
 input en1a, en1b, en2a, en2b;
 
+input [4:0] switchesL, switchesR;
+
 output serial;
 // 1Hz clock
-wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,en_mux, ensel,trans_en, done, trans_reg_en,transmitting,reg_rst,en_select,encoder1_rst,encoder2_rst;
+wire slowClock,enablewire,LScntl,alu_mux_cntl,we, branch_select,en_mux, ensel,trans_en, done, trans_reg_en,transmitting,reg_rst,en_select,encoder1_rst,encoder2_rst,switch_sel,switch_mux;
 wire [3:0] regA, regB;
 wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
@@ -64,7 +66,11 @@ regfile_alu_datapath datapath(
 	.encoder_value(enval),
 	.external_encoder_enable(en_mux),
 	.p1display(display1),
-	.p2display(display2)
+	.p2display(display2),
+	.switchL(switchesL),
+	.switchR(switchesR),
+	.switch_select(switch_sel),
+	.switch_mux(switch_mux)
 );
 
 
@@ -107,7 +113,9 @@ CPU_FSM FSM(
 .transmitting(transmitting),
 .transmit_reg_en(trans_reg_en),
 .en1rst(encoder1_rst),
-.en2rst(encoder2_rst)
+.en2rst(encoder2_rst),
+.switch_select(switch_sel),
+.switch_mux(switch_mux)
 );
 
 Instruction_Decoder decoder(

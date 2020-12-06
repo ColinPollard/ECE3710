@@ -1,12 +1,13 @@
 // Wrapper for ALU, regfiles, mux, etc.
 // Inputs are all of the control signals
 
-module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB, flagModuleOut,encoder_value,external_encoder_enable,p1display,p2display);
+module regfile_alu_datapath(clk, write_enable, write_select, external_write_value, external_write_enable, regA, regB, op, reg_imm, immediate_value, reg_reset, wbValue, busA, ALUB, flagModuleOut,encoder_value,external_encoder_enable,p1display,p2display, switchL, switchR,switch_select,switch_mux);
 
-input clk, reg_imm, write_enable, reg_reset, external_write_enable,external_encoder_enable;
+input clk, reg_imm, write_enable, reg_reset, external_write_enable,external_encoder_enable,switch_select,switch_mux;
 input [15:0] immediate_value, external_write_value,encoder_value;
 input [3:0] regA, regB, write_select;
 input [7:0] op;
+input [4:0] switchL, switchR;
 
 output [6:0] p1display,p2display;
 
@@ -14,7 +15,7 @@ output [4:0] flagModuleOut;
 // For testing, normally would be a wire.
 output[15:0] wbValue, busA, ALUB;
 
-wire [15:0] busB, ALUC,tempwbVal,p1score,p2score;
+wire [15:0] busB, ALUC,tempwbVal,p1score,p2score,tempwbval2,switchval;
 
 
 // BUS B MUX
@@ -38,8 +39,24 @@ mux2to1 encoderMUX(
 	.A(tempwbVal), 
 	.B(encoder_value), 
 	.ctrl(external_encoder_enable), 
+	.out(tempwbval2)
+);
+
+mux2to1 SwitchesMUX(
+	.A(switchL), 
+	.B(switchR), 
+	.ctrl(switch_select), 
+	.out(switchval)
+);
+
+mux2to1 LoadswitchMUX(
+	.A(tempwbval2), 
+	.B(switchval), 
+	.ctrl(switch_mux), 
 	.out(wbValue)
 );
+
+
 
 // Instantiate the regfile
 regfile regfileInstance(
