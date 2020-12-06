@@ -94,7 +94,6 @@ CPU_FSM FSM(
 .clk(clk),
 //this changes based on button input
 .rst(~buttonand),
-
 //
 .PC_enable(enablewire),
 .R_enable(write_enable),
