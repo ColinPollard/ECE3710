@@ -136,7 +136,7 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 		else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b1010)
 		begin
 			op = {instruction[15:12], instruction[7:4]};
-			rDest = 4'd9;
+			rDest = instruction[11:8];
 			rSrc = 4'bx;
 			// Don't care
 			immediate = 16'bx;
@@ -147,12 +147,24 @@ module Instruction_Decoder(instruction, op, rDest, rSrc, immediate, r_or_i);
 		else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b1110)
 		begin
 			op = {instruction[15:12], instruction[7:4]};
-			rDest = 4'd10;
+			rDest = instruction[11:8];
 			rSrc = 4'bx;
 			// Don't care
 			immediate = 16'bx;
 			r_or_i = 1'b0;
 		end
+		
+			//load start button
+		else if(instruction[15:12] == 4'b0100 && instruction[7:4] == 4'b0001)
+		begin
+			op = {instruction[15:12], instruction[7:4]};
+			rDest = instruction[11:8];
+			rSrc = 4'bx;
+			// Don't care
+			immediate = 16'bx;
+			r_or_i = 1'b0;
+		end
+		
 		
 		
 		// I-Type instruction
