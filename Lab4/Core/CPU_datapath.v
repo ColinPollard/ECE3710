@@ -1,8 +1,8 @@
 // Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 
-module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2,switchesL,switchesR,testbutton,speed1,speed2);
-input clk, button1,button2,testbutton;
+module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2,switchesL,switchesR,speed1,speed2);
+input clk, button1,button2;
 input rst;
 input en1a, en1b, en2a, en2b;
 
@@ -18,11 +18,11 @@ wire [15:0] currentInstruction,outgoinginstruction;
 output [6:0] display1,display2,speed1,speed2;
 
 // Create a clock divider for slow signal
-clk_divider divider(
-.clk_in(clk), 
-.rst(1'b0), 
-.clk_out(slowClock)
-);
+//clk_divider divider(
+//.clk_in(clk), 
+//.rst(1'b0), 
+//.clk_out(slowClock)
+//);
 
 // Current address of the program counter
 wire [9:0] currentAddress,addressinput,wbaddress;
@@ -59,7 +59,6 @@ regfile_alu_datapath datapath(
 	.reg_imm(r_or_i), 
 	.immediate_value(imm_val), 
 	.reg_reset(reg_rst), 
-	.wbValue(wbValue),
 	.busA(Din),
 	.ALUB(wbaddress),
 	.flagModuleOut(flagModuleOut),
