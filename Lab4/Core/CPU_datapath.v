@@ -1,10 +1,16 @@
 // Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 
-module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2,switchesL,switchesR,speed1,speed2);
+module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,
+						  switchesL,switchesR,speed1,speed2, vga_sync, vga_clock, vga_blank,
+						  vga_vs, vga_hs, r, g, b);
 input clk, button1,button2;
 input rst;
 input en1a, en1b, en2a, en2b;
+
+input vga_sync;
+output vga_clock, vga_blank,vga_vs,vga_hs;
+output [7:0] r,g,b;
 
 input [4:0] switchesL, switchesR;
 
@@ -15,7 +21,10 @@ wire [3:0] regA, regB;
 wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
 
-output [6:0] display1,display2,speed1,speed2;
+output [6:0] speed1,speed2;
+
+wire [9:0] hcount, vcount;
+wire [0:6] p1Score, p2Score;
 
 // Create a clock divider for slow signal
 //clk_divider divider(
@@ -64,8 +73,8 @@ regfile_alu_datapath datapath(
 	.flagModuleOut(flagModuleOut),
 	.encoder_value(enval),
 	.external_encoder_enable(en_mux),
-	.p1display(display1),
-	.p2display(display2),
+	.p1display(p1Score),
+	.p2display(p2Score),
 	.switchL(switchesL),
 	.switchR(switchesR),
 	.switch_select(switch_sel),
@@ -186,6 +195,26 @@ bcd_to_sev_seg speed1display(
 bcd_to_sev_seg speed2display(
 .bcd(switchesR),
 .seven_seg(speed2)
+);
+
+vga_control cntl(
+.clk(clk),
+.rst(~vga_sync),
+.vga_blank_n(vga_blank),
+.vga_clk(vga_clock),
+.hcount(hcount),
+.vcount(vcount),
+.hsync(vga_hs),
+.vsync(vga_vs)
+);
+
+bitgen gen(
+.bright(vga_blank),
+.hcount(hcount),
+.vcount(vcount),
+.rgb({r,g,b}),
+.p1(~p1Score),
+.p2(~p2Score)
 );
 
 endmodule
