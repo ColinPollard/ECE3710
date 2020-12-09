@@ -1,8 +1,8 @@
 // Authors: Colin Pollard, Ian Lavin, McKay Mower, Luke Majors
 // Date: 10/15/2020
 
-module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2,switchesL,switchesR);
-input clk, button1,button2;
+module CPU_datapath(clk, rst, en1a, en1b, en2a, en2b, serial,button1,button2,display1,display2,switchesL,switchesR,testbutton,speed1,speed2);
+input clk, button1,button2,testbutton;
 input rst;
 input en1a, en1b, en2a, en2b;
 
@@ -15,7 +15,7 @@ wire [3:0] regA, regB;
 wire [15:0] Din,enval;
 wire [15:0] currentInstruction,outgoinginstruction;
 
-output [6:0] display1,display2;
+output [6:0] display1,display2,speed1,speed2;
 
 // Create a clock divider for slow signal
 clk_divider divider(
@@ -29,7 +29,7 @@ wire [9:0] currentAddress,addressinput,wbaddress;
 
 // Set the address to point to 0 initially.
 
-wire write_enable, r_or_i,IREnable,PC_rst,buttonand;
+wire write_enable, r_or_i,IREnable,PC_rst,buttonand,button_mux;
 wire [4:0] flagModuleOut;
 wire [7:0] op,transmitval;
 wire [15:0] imm_val,encoderval;
@@ -70,7 +70,9 @@ regfile_alu_datapath datapath(
 	.switchL(switchesL),
 	.switchR(switchesR),
 	.switch_select(switch_sel),
-	.switch_mux(switch_mux)
+	.switch_mux(switch_mux),
+	.button_mux(button_mux),
+	.button_val(buttonand)
 );
 
 
@@ -93,7 +95,7 @@ DualBRAM memoryModule(
 CPU_FSM FSM(
 .clk(clk),
 //this changes based on button input
-.rst(~buttonand),
+.rst(~rst),
 //
 .PC_enable(enablewire),
 .R_enable(write_enable),
@@ -114,7 +116,8 @@ CPU_FSM FSM(
 .en1rst(encoder1_rst),
 .en2rst(encoder2_rst),
 .switch_select(switch_sel),
-.switch_mux(switch_mux)
+.switch_mux(switch_mux),
+.button_mux(button_mux)
 );
 
 Instruction_Decoder decoder(
@@ -174,6 +177,16 @@ buttonand andgate(
 .button2(button2),
 .clk(clk),
 .buttonand(buttonand)
+);
+
+bcd_to_sev_seg speed1display(
+.bcd(switchesL),
+.seven_seg(speed1)
+);
+
+bcd_to_sev_seg speed2display(
+.bcd(switchesR),
+.seven_seg(speed2)
 );
 
 endmodule

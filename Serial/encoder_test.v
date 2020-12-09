@@ -20,12 +20,6 @@ encoder encoder(
 	.enval(bcd),
 	.en_choose(switch)
 	);
-//quad(
-//.clk(slowclock),
-//.quadA(en1a),
-//.quadB(en1b),
-//.count(bcd)
-//);
 	
 	
 bcd_to_sev_seg sevenseg(
