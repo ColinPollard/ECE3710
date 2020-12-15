@@ -1,0 +1,269 @@
+# Main assembly code for Pong Game
+# ECE3710 Physical Pong
+# Mckay Mower, Luke Majors, Ian Lavin, Colin Pollard
+
+#Registers Used in this code:
+# R1 - R6: Temporary Registers
+# dx: Ball X velocity
+# dy: Ball Y velocity 
+#  x: Stores balls X-position
+#  y: Stores balls Y-Position
+# p1Top: Stores P1s top paddle position
+# p1Bottom: Stores P1s bottom paddle position
+# p2Top: Stores P2s top paddle position
+# p2Bottom: Stores P2s bottom paddle position
+# p1Score: Stores Player1's score
+# p2Score: Stores Player2's score
+# start: Stores 1 if game has been started/ended, 0 otherwise
+
+#Main Game Loop
+
+.GameLoop
+    XOR R3, R3
+    ADDI $8, R3 #Shift amount
+
+    MOV X, R1
+    MOV Y, R2
+
+    ADD dx, R1
+    ADD dy, R2
+
+    ARSH R3, R1
+    ARSH R3, R2
+
+CMPI $0, R6
+BEQ CheckReset
+
+XOR R5, R5
+ADDI $115, R5
+CMP R1, R5 #if(x > 120)
+BL CheckP1Y
+CMPI $-115, R1 #if(x < -120)
+BL CheckP2Y
+jmp YBallCheck
+
+.CheckP1Y
+    XOR R5, R5
+    ADD p1, R5 
+    XOR R4, R4 
+    ADD p1, R4 
+    ADDI $26, r5        #p1 + 22
+    ADDI $-26, r4       #p1 - 22
+    CMP R4, R2 
+    BL P2Score
+    CMP R2, R5 
+    BL P2Score
+    jmp CalculateReflectionP1
+
+.CalculateReflectionP1
+    XOR R5, R5
+    ADD p1, R5 
+    XOR R4, R4 
+    ADD p1, R4
+    ADDI $13, r5
+    ADDI $-13, r4
+    CMP R2, R5
+    BL addDY
+    CMP r4, r2
+    BL subDY
+    jmp ChangeBallXDirection
+
+    .CalculateReflectionP2
+    XOR R5, R5
+    ADD p2, R5 
+    XOR R4, R4 
+    ADD p2, R4
+    ADDI $13, r5
+    ADDI $-13, r4
+    CMP R2, R5
+    BL addDY
+    CMP r4, r2
+    BL subDY
+    jmp ChangeBallXDirection
+
+.addDY
+    MOV DY, R4
+    ADDI $3, R4
+    CMPI $0, R4
+    BEQ addMore
+    CMPI $16, R4
+    BL validChange
+    XOR DY, DY
+    ADDI $16, DY
+    jmp ChangeBallXDirection
+
+.addMore
+    ADDI $3, R4
+    jmp validChange
+.subMore
+    SUBI $3, R4
+    jmp validChange
+
+.subDY
+    MOV DY, R4
+    ADDI $-3, R4
+    CMPI $0, R4
+    BEQ subMore
+    XOR R5, R5
+    ADDI $-16, R5
+    CMP R4, R5
+    BL validChange
+    XOR DY, DY
+    ADDI $-16, DY
+    jmp ChangeBallXDirection
+
+.validChange
+    MOV R4, DY
+    jmp ChangeBallXDirection
+
+.CheckP2Y
+    XOR R5, R5
+    ADD p2, R5 
+    XOR R4, R4 
+    ADD p2, R4 
+    ADDI $26, r5        #p2 + 22
+    ADDI $-26, r4       #p2 - 22
+    CMP R4, R2 
+    BL P1Score
+    CMP R2, R5 
+    BL P1Score 
+    jmp CalculateReflectionP2
+
+.P1Score
+    ADDI $1, P1Score
+    XOR DX, DX
+    XOR DY, DY
+    XOR X, X
+    XOR Y, Y
+    XOR R6, R6
+    jmp P1
+.P2Score
+    ADDI $1, P2Score
+    XOR DX, DX
+    XOR DY, DY
+    XOR X, X
+    XOR Y, Y
+    XOR R6, R6
+    jmp P1
+
+.ChangeBallXDirection
+    MOV dx, R1
+    XOR dx, dx
+    SUB R1, dx
+
+.YBallCheck
+    #If Y < -127 (Bottom Boundary)
+    CMPI $-127, R2
+    BL ChangeBallYDirection
+
+    #If Y > 127 (Top Boundary)
+    XOR R3, R3
+    ADDI $127, R3
+    CMP R2, R3
+    BL ChangeBallYDirection
+
+    jmp P1
+
+.ChangeBallYDirection
+    MOV dy, R1
+    XOR dy, dy
+    SUB R1, dy
+    jmp P1
+
+.CheckReset
+    READPP START
+    CMPI $0, START
+    BEQ P1
+    LOADDX DX
+    LOADDY DY
+    ADDI $1, R6
+    MOV dx, R1
+    XOR dx, dx
+    SUB R1, dx
+
+.P1
+    ENC1 R1
+    ENC2 R2
+
+    ADD p1, R1 #New position
+    CMPI $-127, R1
+    BL P1Neg
+
+    XOR R3, R3
+    ADDI $127, R3
+    CMP R1, R3
+    BL P1Pos
+
+    MOV R1, P1
+    jmp P2
+
+.P1Neg
+    XOR P1, P1
+    ADDI $-127, P1
+    jmp P2
+.P1Pos
+    XOR P1, P1
+    ADDI $127, P1
+    jmp P2
+
+.P2
+    ADD p2, R2
+    CMPI $-128, R2
+    BEQ P2Neg
+    XOR R3, R3
+    ADDI $-127, R3
+    CMP R3, R2
+    BL P2Neg
+
+    CMPI $127, R2
+    BEQ P2Pos
+    XOR R3, R3
+    ADDI $127, R3
+    CMP R2, R3
+    BL P2Pos
+
+    MOV R2, P2
+    jmp Trans
+
+.P2Neg
+    XOR P2, P2
+    ADDI $-127, P2
+    jmp Trans
+.P2Pos
+    XOR P2, P2
+    ADDI $127, P2
+
+.Trans
+    ADD dx, X
+    ADD dy, Y
+
+    MOV X, R1
+    MOV Y, R2
+
+    XOR R3, R3
+    ADDI $8, R3
+
+    ARSH R3, R1
+    ARSH R3, R2
+
+    XOR R4, R4
+    XOR R5, R5
+    ADDI $-128, R4
+
+    TRANSMIT R4
+    TRANSMIT P1
+    TRANSMIT P2
+    TRANSMIT R1    # Send x
+    TRANSMIT R2    # Send y
+
+XOR R3, R3
+.Loop
+    XOR R4, R4
+    .Loop2
+        ADDI $1, R4
+        CMPI $20, R4
+        BL Loop2
+    ADDI $1, R3
+    CMPI $3, R3 
+    BL Loop
+jmp GameLoop
