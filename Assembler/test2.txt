@@ -1,5 +1,0 @@
-#test2.txt 
-#tests for load, store, branch and jump instructions
-Addi $7, R3
-Addi $8, R1
-JMP L1

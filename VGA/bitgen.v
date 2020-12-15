@@ -69,7 +69,8 @@ always @(bright, x_pos, y_pos, p1, p2) begin
 			r = 8'd0;
 
 		//Player 1 Score -------------------------------------------------------
-		//top edge p1 A
+		
+		//Top edge of P1s score (Segment A)
 		else if (x_pos >= 115 && x_pos < 210 && y_pos >= 187 && y_pos < 200) begin
 			if(p1[0])
 				r = 8'd255;

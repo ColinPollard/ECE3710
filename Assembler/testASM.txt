@@ -1,5 +1,0 @@
-ADD R1, R2
-ADD R4, R5
-ADDI $12, R7 #Adds 12 to r7
-
-
